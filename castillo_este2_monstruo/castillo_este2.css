@@ -1,0 +1,23 @@
+.castillo_este2 {
+    position: relative;
+    z-index: 20;
+    background-image: url('../Imagenes/saladcha.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: left center;
+
+}
+
+.tigre {
+    position: absolute;
+    z-index: 30;
+    height: 500px;
+    width: 300px;
+    background-image: url('../Imagenes/monstruo3.png');
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    top: 60%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+}

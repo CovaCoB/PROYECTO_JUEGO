@@ -8,16 +8,3 @@
 
 }
 
-.bruja {
-    position: absolute;
-    z-index: 20;
-    height: 350px;
-    width: 150px;
-    background-image: url('../Imagenes/bruja_transparencia.png');
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}

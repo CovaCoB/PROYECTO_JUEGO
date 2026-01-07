@@ -1,9 +1,0 @@
-.castillo_boss {
-    position: relative;
-    z-index: 20;
-    background-image: url('../Imagenes/pasilloizq2.png');
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: left center;
-
-}

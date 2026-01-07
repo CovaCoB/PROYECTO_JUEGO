@@ -20,3 +20,13 @@
     background-position: bottom center;
     background-size: contain;
 }
+
+.cuadro_narrativa a{
+    text-decoration: none;
+    color: white;
+    margin: 0px 12px;
+}
+
+.cuadro_narrativa a:hover{
+    color:rgb(223, 216, 86);
+}

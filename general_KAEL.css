@@ -24,12 +24,18 @@ body, html {
     width: 80%;    
     height: 17%;  
     background: rgba(0, 0, 0, 0.6); 
-    color: white;
-    padding: 20px;
-    border: 2px solid #8dd4c8; 
-    z-index: 100;   
-    font-family: 'Georgia', serif;
+    border: 2px solid #f0e595; 
+    z-index: 100; 
+    padding-top:8px;
 }
+.cuadro_narrativa p {
+    font-family: 'Georgia', serif;
+    text-align: center;
+    font-size: 15px;
+    color: white;
+    padding: 10px;
+}
+
 .fondo_carta {
     position: absolute;
     width: 100%;
