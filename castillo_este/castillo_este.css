@@ -1,0 +1,8 @@
+.castillo_este {
+    position: relative;
+    z-index: 20;
+    background-image: url('../Imagenes/pasillo_direcciondcha.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: left center;
+}

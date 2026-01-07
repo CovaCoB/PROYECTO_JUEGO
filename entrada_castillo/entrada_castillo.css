@@ -1,0 +1,8 @@
+.entrada_castillo {
+    position: relative;
+    z-index: 20;
+    background-image: url('../Imagenes/castillo.png');
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}

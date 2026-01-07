@@ -1,0 +1,8 @@
+.castillo_norte {
+    position: relative;
+    z-index: 20;
+    background-image: url('../Imagenes/direccion_pasillo.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: left center;
+}

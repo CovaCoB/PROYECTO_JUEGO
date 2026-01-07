@@ -1,0 +1,9 @@
+.castillo_oeste {
+    position: relative;
+    z-index: 20;
+    background-image: url('../Imagenes/pasilloizq.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: left center;
+
+}

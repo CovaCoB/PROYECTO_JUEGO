@@ -1,0 +1,9 @@
+.castillo_este2 {
+    position: relative;
+    z-index: 20;
+    background-image: url('../Imagenes/saladcha.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: left center;
+
+}
