@@ -1,0 +1,47 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    }
+
+body, html {
+    height: 100%;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+.contenedor {
+    display: grid;
+    place-items: center; 
+    height: 100vh;
+    width: 100%;
+    background-image: url('Imagenes/fondo_horizontal.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.cartas {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap:40%;
+}
+
+.carta img {
+        display: block;
+        cursor: pointer;
+        width: auto;
+        height: 450px;
+    }
+
+a {
+    border:none;
+    padding: 0;
+    background: none;
+
+}
+a:hover img{
+    transform: scale(1.05);
+}
+
+

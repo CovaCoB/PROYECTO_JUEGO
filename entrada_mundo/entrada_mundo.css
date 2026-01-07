@@ -1,0 +1,12 @@
+
+
+.imagen_fondo{
+    position: relative;
+    z-index: 2;
+    background-image: url('../Imagenes/mundo1.png');
+    background-size: cover;
+    background-position: left center;
+    background-repeat: no-repeat;
+}
+
+
