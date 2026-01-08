@@ -1,3 +1,4 @@
+console.log("Sala actual detectada:", localStorage.getItem("salaActual"));
 const habitaciones = {
     "entrada_mundo": {
         norte: "entrada_castillo",
@@ -85,62 +86,46 @@ const habitaciones = {
     }
 };
 
-
-
-
-
-
-
-const mapaKael = {
-    norte: [
-        "/entrada_mundo/entrada_KAEL.html",
-        "/entrada_castillo/entrada_castilloKAEL.html",
-        "/castillo/castillo_KAEL.html",
-        "/castillo_oeste/castillo_oesteKAEL.html",
-        "/castillo_oeste2/castillo_oeste2KAEL.html",
-        "/castillo_este/castillo_esteKAEL.html",
-        "/castillo_este_monstruo/castillo_este_monstruoKAEL.html",
-        "/castillo_este2/castillo_este2KAEL.html",
-        "/castillo_este2_monstruo/castillo_este2_monstruoKAEL.html"
-    ],
-    sur: [
-        "/castillo_boss/castillobossKAEL.html",
-        "/castillo_oeste2/castillo_oeste2KAEL.html",
-        "/castillo_oeste/castillo_oesteKAEL.html",
-        "/castillo_este2_monstruo/castillo_este2_monstruoKAEL.html",
-        "/castillo_este2/castillo_este2KAEL.html",
-        "/castillo_este_monstruo/castillo_este_monstruoKAEL.html",
-        "/castillo_este/castillo_esteKAEL.html",
-        "/castillo_norte/castillo_norteKAEL.html",
-        "/castillo/castillo_KAEL.html",
-        "/entrada_castillo/entrada_castilloKAEL.html",
-        "/paisaje_izq/paisaje_KAEL.html",
-        "/paisaje_izq_bruja/paisaje_KAEL.html",
-        "/forja/forja_KAEL.html"
-    ],
-    este: [
-        "/entrada_mundo/entrada_KAEL.html",
-        "/castillo_norte/castillo_norteKAEL.html"
-    ],
-    oeste: [
-        "/entrada_mundo/entrada_KAEL.html",
-        "/castillo_norte/castillo_norteKAEL.html"
-    ]
+const rutas ={
+    "entrada_mundo": "/entrada_mundo/entrada_KAEL.html",
+    "forja": "/forja/forja_KAEL.html",
+    "paisaje_izq" : "/paisaje_izq/paisaje_KAEL.html",
+    "paisaje_izq_bruja": "/paisaje_izq_bruja/paisaje_KAEL.html",
+    "entrada_castillo": "/entrada_castillo/entrada_castilloKAEL.html",
+    "castillo": "/castillo/castillo_KAEL.html",
+    "castillo_norte": "/castillo_norte/castillo_norteKAEL.html",
+    "castillo_oeste": "/castillo_oeste/castillo_oesteKAEL.html",
+    "castillo_oeste2": "/castillo_oeste2/castillo_oeste2KAEL.html",
+    "castillo_boss": "/castillo_boss/castillobossKAEL.html",
+    "castillo_este": "/castillo_este/castillo_esteKAEL.html",
+    "castillo_este_monstruo": "/castillo_este_monstruo/castillo_este_monstruoKAEL.html",
+    "castillo_este2":  "/castillo_este2/castillo_este2KAEL.html",
+    "castillo_este2_monstruo": "/castillo_este2_monstruo/castillo_este2_monstruoKAEL.html"
 };
 
+function mover(direccion) {
+    let salaActual = localStorage.getItem("salaActual") || "entrada_mundo";
+    
+    let destino = habitaciones[salaActual][direccion];
 
-function mover(direccion){
-   let paso = parseInt(localStorage.getItem(direccion + "paso")) || 0;
-   const habitacion = mapaKael[direccion];
+    if (Array.isArray(destino)) {
+        let random = Math.random();
+        if (random < 0.20) {
+            destino = destino[1]; 
+        } else {
+            destino = destino[0]; 
+        }
+    }
 
-if(habitacion[paso]){
-    localStorage.setItem(direccion + "paso", paso+1);
-    window.location.href = habitacion[paso];
-}else {
-    cuadro_narrativa(`Has llegado al final de ${direccion}.`);
-    localStorage.setItem (direccion + "paso", 0);
+    if (destino && rutas[destino]) {
+        localStorage.setItem("salaActual", destino);
+        window.location.href = rutas[destino];
+    } else {
+
+        alert("No puedes ir hacia el " + direccion);
+    }
 }
-}
+
 //Asignamos al id del html el evento click que redirige a la ruta norte con la funcion.
 document.getElementById("dir_norte").addEventListener("click", ()=>mover("norte"));
 document.getElementById("dir_sur").addEventListener("click", ()=>mover("sur"));
