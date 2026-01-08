@@ -22,7 +22,8 @@ body, html {
     left: 50%;
     transform: translateX(-50%);
     width: 80%;    
-    height: 17%;  
+    max-height: 150px; 
+    overflow-y: auto;
     background: rgba(0, 0, 0, 0.6); 
     border: 2px solid #f0e595; 
     z-index: 100; 
@@ -56,3 +57,62 @@ body, html {
     background-repeat: no-repeat;
     background-position: center;
 }
+
+.botones {
+    position: absolute;
+    top:0;
+    left:0;
+    z-index: 10;
+    height: 100%;
+    width: 80%;
+    z-index: 200;
+    pointer-events: none;
+}
+
+.botones button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    pointer-events: auto;
+    position: relative !important; /* Anula el absolute de arriba */
+    top: auto !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    transform: none !important;
+    
+ 
+}
+
+/* ... (Mantenemos igual hasta .botones button img) ... */
+
+.botones button img {
+    width: 45px; /* Un poco más pequeñas para que el grupo no sea gigante */
+    height: auto;
+    filter: drop-shadow(0 0 5px rgba(0,255,255,0.5));
+    display: block;
+}
+
+/* IMPORTANTE: Usa el nombre de clase que pusiste en el HTML */
+.area_control {
+    position: absolute;
+    bottom: 40px;   /* Sube un poco para que no pegue al borde */
+    right: 40px;    /* Distancia desde el borde derecho del 80% */
+    display: grid;
+    grid-template-areas: 
+        ".     norte ."
+        "oeste .     este"
+        ".     sur   .";
+    gap: 10px;      /* Espacio entre flechas */
+    pointer-events: auto;
+    z-index: 300;
+}
+
+/* LIMPIEZA DE POSICIONAMIENTO: Eliminamos tops/lefts para que el Grid mande */
+
+
+/* Asignación a la rejilla */
+#dir_norte { grid-area: norte; }
+#dir_sur   { grid-area: sur; }
+#dir_este  { grid-area: este; }
+#dir_oeste { grid-area: oeste; }
