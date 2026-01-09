@@ -1,4 +1,3 @@
-console.log("Sala actual detectada:", localStorage.getItem("salaActual"));
 const habitaciones = {
     "entrada_mundo": {
         norte: "entrada_castillo",
@@ -38,7 +37,7 @@ const habitaciones = {
     },
     "castillo_norte": {
         sur: "castillo",
-        este: ["castillo_este", "castillo_este_monstruo"],
+        este: ["castillo_este", "castillomonstruo2"],
         oeste: "castillo_oeste",
         norte: null
     },
@@ -66,20 +65,20 @@ const habitaciones = {
         este: null,
         oeste: null
     },
-     "castillo_este_monstruo": {
+     "castillomonstruo2": {
         norte: ["castillo_este2", "castillo_este2_monstruo"],
         sur: "castillo_norte",
         este: null,
         oeste: null
     },
     "castillo_este2": {
-        sur: ["castillo_este", "castillo_este_monstruo"],
+        sur: ["castillo_este", "castillomonstruo2"],
         este: null,
         oeste: null,
         norte: null
     },
     "castillo_este2_monstruo": {
-        sur: ["castillo_este", "castillo_este_monstruo"],
+        sur: ["castillo_este", "castillomonstruo2"],
         este: null,
         oeste: null,
         norte: null
@@ -98,7 +97,7 @@ const rutas ={
     "castillo_oeste2": "/castillo_oeste2/castillo_oeste2KAEL.html",
     "castillo_boss": "/castillo_boss/castillobossKAEL.html",
     "castillo_este": "/castillo_este/castillo_esteKAEL.html",
-    "castillo_este_monstruo": "/castillo_este_monstruo/castillo_este_monstruoKAEL.html",
+    "castillomonstruo2": "/castillomonstruo2/monstruo2kael.html",
     "castillo_este2":  "/castillo_este2/castillo_este2KAEL.html",
     "castillo_este2_monstruo": "/castillo_este2_monstruo/castillo_este2_monstruoKAEL.html"
 };
