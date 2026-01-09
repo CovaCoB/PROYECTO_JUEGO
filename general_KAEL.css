@@ -74,44 +74,36 @@ body, html {
     border: none;
     cursor: pointer;
     pointer-events: auto;
-    position: relative !important; /* Anula el absolute de arriba */
+    position: relative !important;
     top: auto !important;
     left: auto !important;
     right: auto !important;
     bottom: auto !important;
     transform: none !important;
     
- 
 }
 
-/* ... (Mantenemos igual hasta .botones button img) ... */
-
 .botones button img {
-    width: 45px; /* Un poco más pequeñas para que el grupo no sea gigante */
+    width: 45px;
     height: auto;
     filter: drop-shadow(0 0 5px rgba(0,255,255,0.5));
     display: block;
 }
 
-/* IMPORTANTE: Usa el nombre de clase que pusiste en el HTML */
 .area_control {
     position: absolute;
-    bottom: 40px;   /* Sube un poco para que no pegue al borde */
-    right: 40px;    /* Distancia desde el borde derecho del 80% */
+    bottom: 40px;  
+    right: 40px;    
     display: grid;
     grid-template-areas: 
         ".     norte ."
         "oeste .     este"
         ".     sur   .";
-    gap: 10px;      /* Espacio entre flechas */
+    gap: 10px;      
     pointer-events: auto;
     z-index: 300;
 }
 
-/* LIMPIEZA DE POSICIONAMIENTO: Eliminamos tops/lefts para que el Grid mande */
-
-
-/* Asignación a la rejilla */
 #dir_norte { grid-area: norte; }
 #dir_sur   { grid-area: sur; }
 #dir_este  { grid-area: este; }

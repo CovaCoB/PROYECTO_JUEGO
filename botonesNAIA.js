@@ -86,21 +86,22 @@ const habitaciones = {
 };
 
 const rutas ={
-    "entrada_mundo": "/entrada_mundo/entrada_KAEL.html",
-    "forja": "/forja/forja_KAEL.html",
-    "paisaje_izq" : "/paisaje_izq/paisaje_KAEL.html",
-    "paisaje_izq_bruja": "/paisaje_izq_bruja/paisaje_KAEL.html",
-    "entrada_castillo": "/entrada_castillo/entrada_castilloKAEL.html",
-    "castillo": "/castillo/castillo_KAEL.html",
-    "castillo_norte": "/castillo_norte/castillo_norteKAEL.html",
-    "castillo_oeste": "/castillo_oeste/castillo_oesteKAEL.html",
-    "castillo_oeste2": "/castillo_oeste2/castillo_oeste2KAEL.html",
-    "castillo_boss": "/castillo_boss/castillobossKAEL.html",
-    "castillo_este": "/castillo_este/castillo_esteKAEL.html",
-    "castillomonstruo2": "/castillomonstruo2/monstruo2kael.html",
-    "castillo_este2":  "/castillo_este2/castillo_este2KAEL.html",
-    "castillo_este2_monstruo": "/castillo_este2_monstruo/castillo_este2_monstruoKAEL.html"
+    "entrada_mundo": "/entrada_mundo/entrada_NAIA.html",
+    "forja": "/forja/forja_NAIA.html",
+    "paisaje_izq" : "/paisaje_izq/paisaje_NAIA.html",
+    "paisaje_izq_bruja": "/paisaje_izq_bruja/paisaje_NAIA.html",
+    "entrada_castillo": "/entrada_castillo/entrada_castilloNAIA.html",
+    "castillo": "/castillo/castillo_NAIA.html",
+    "castillo_norte": "/castillo_norte/castillo_norteNAIA.html",
+    "castillo_oeste": "/castillo_oeste/castillo_oesteNAIA.html",
+    "castillo_oeste2": "/castillo_oeste2/castillo_oeste2NAIA.html",
+    "castillo_boss": "/castillo_boss/castillobossNAIA.html",
+    "castillo_este": "/castillo_este/castillo_esteNAIA.html",
+    "castillomonstruo2": "/castillomonstruo2/monstruo2naia.html",
+    "castillo_este2":  "/castillo_este2/castillo_este2NAIA.html",
+    "castillo_este2_monstruo": "/castillo_este2_monstruo/castillo_este2_monstruoNAIA.html"
 };
+
 
 function mover(direccion) {
     let salaActual = localStorage.getItem("salaActual") || "entrada_mundo";
@@ -139,6 +140,7 @@ function recuadroTexto(texto){
     informacion.scrollTop = informacion.scrollHeight;
 }
 
+
 const consejos = [
     "En lo más profundo del Oeste, tras la segunda torre, habita aquello que custodia la salida. No entres sin estar preparado, pues el guardián del Castillo no perdona los pasos en falso.",
     "Necesitarás piedra amatista para entrar al ala este, dicen que esa piedra ayuda a debilitar a aquello que ahí habita ",
@@ -149,7 +151,7 @@ const consejos = [
 function bruja(){
     let posibilidad = Math.floor(Math.random() * consejos.length);
     let mensaje = consejos[posibilidad];
-    let texto = "Bien Kael... recuerda esto: ";
+    let texto = "Bien Naia... recuerda esto: ";
 
     recuadroTexto(texto + mensaje);
 }
@@ -174,4 +176,3 @@ if(noConsejo){
 
     });
 }
-
