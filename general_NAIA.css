@@ -36,6 +36,15 @@ body, html {
     color: white;
     padding: 10px;
 }
+#comprar, #reparar{
+    cursor: pointer;
+    font-family: 'Georgia', serif;
+    text-align: center;
+    font-size: 15px;
+    color:hsl(280, 75%, 76%); 
+    padding: 2px;
+    background: rgba(0, 0, 0, 0.6); 
+}
 
 .texto_carta {
     position: absolute;
@@ -53,6 +62,16 @@ body, html {
     border-radius: 8px;
     z-index: 500;
 }
+#hablarBruja, #respuesta{
+    cursor: pointer;
+    font-family: 'Georgia', serif;
+    text-align: center;
+    font-size: 15px;
+    color: white;
+    padding: 5px;
+    background: rgba(0, 0, 0, 0.6); 
+}
+
 #heroe {
     display: block;        
     width: 100%;        
@@ -87,22 +106,24 @@ body, html {
 }
 .seccion-info {
     position: absolute;
-    bottom: 40px;       
-    left: 40px;            
+    bottom: 10px;       
+    right: 530px;            
     z-index: 2000;
-    background: rgba(45, 25, 5, 0.9); 
-    padding: 12px;
+    background: rgba(45, 25, 5, 0.9);
+    padding: 6px;
     border: 2px solid hsl(280, 75%, 76%);
     border-radius: 10px;
     width: auto;         
     display: flex;         
     flex-direction: column; 
     
+    
 }
 
 .contenedor-botones-info {
     display: flex;
-    gap: 8px;              
+    gap: 8px;    
+        
 }
 
 .seccion-info button {
@@ -147,7 +168,7 @@ body, html {
 }
 .seccion-info2 {
     position: absolute;
-    bottom: 40px;       
+    bottom: 10px;       
     right: 330px;       
     z-index: 2000;
     background: rgba(45, 25, 5, 0.9); 

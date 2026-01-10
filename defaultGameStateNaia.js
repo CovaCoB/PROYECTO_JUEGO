@@ -424,5 +424,40 @@ function gestion(){
     menu.classList.toggle("mostrar");
 }
 
+function buscarMochila(){
+    let heroe = defaultGameState.player[2];
+    let encontrado = Math.floor(Math.random() *10);
+    heroe.gold +=encontrado;
 
+    let texto= `<p>¡Hoy estás de suerte! has encontrado ${encontrado} monedas y ahora tienes ${heroe.gold} monedas de oro.</p>`;
+    recuadroTexto(texto);
+    let cartaHeroe = document.getElementById("heroe");
+    if(cartaHeroe && cartaHeroe !== ""){
+        muestraHeroe();
+    }
+}
+let botonMochila = document.getElementById("mochila");
+if(botonMochila){
+    botonMochila.addEventListener("click", function(e){
+        e.preventDefault();
+        buscarMochila();
+    });
+}
 
+function comprarPocion(){
+    let heroe = defaultGameState.player[2];
+    heroe.gold-=3;
+    let texto = `<p>Gracias por comprar esta poción, te será muy útil en tu viaje. Te quedan ${heroe.gold} monedas</p>`;
+    recuadroTexto(texto);
+    let cartaHeroe = document.getElementById("heroe");
+    if(cartaHeroe && cartaHeroe !== ""){
+        muestraHeroe();
+    }
+}
+let pocion = document.getElementById("comprar");
+if(pocion){
+pocion.addEventListener("click", function(e){
+    e.preventDefault();
+    comprarPocion();
+});
+}

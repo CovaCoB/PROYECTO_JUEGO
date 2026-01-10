@@ -9,7 +9,7 @@
 </head>
 <body>
       <div class="contenedor_entrada">
-         <div class="cuadro_narrativa">
+         <div class="cuadro_narrativa" id="cuadro_narrativa">
                 <p>
                     Bienvenida a AELORIA, un mundo donde la magia y los secretos antiguos esperan a los más valientes. <br>
                     Pulsa la flecha derecha para ir a "El taller del anciano", el lugar donde forjar tus armas y adquirir pociones.<br>
@@ -40,7 +40,6 @@
                 <button onclick="muestraEnemigo()">Muestra enemigo</button>
                 <button onclick="cerrarInfo()">X</button>
             </div>
-            
             <div id="datos-sala"></div> 
             <div id="datos-enemigo"></div> 
             <div id="cerrar"></div>
@@ -49,10 +48,9 @@
             <div class = "menu">
                 <button onclick="interaccion()">Interacción</button>
                     <div id="menu_acciones" class="acciones">
-                        <button onclick="buscar()">Buscar</button>
-                        <button onclick="comprar()">Comprar</button>
-                        <button onclick="pociones()">Pociones</button>
-                        <button onclick="ayuda()">Ayuda</button>
+                       <button id="mochila">Mochila</button>
+                        <button id="pociones">Pociones</button>
+                        <button id="ayuda">Ayuda</button>
                     </div>
                 <div id="datos-interaccion"></div>
             </div>

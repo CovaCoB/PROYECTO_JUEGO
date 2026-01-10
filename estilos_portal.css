@@ -31,7 +31,8 @@ body, html {
         display: block;
         cursor: pointer;
         width: auto;
-        height: 450px;
+        height: 380px;
+        border-radius: 16%;
     }
 
 a {
