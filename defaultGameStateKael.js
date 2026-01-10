@@ -1,7 +1,7 @@
 const defaultGameState ={
 player: {
     1:{
-        name: "kael",
+        name: "Kael",
         health: 100,
         strength: 10,
         strengthBonus: 0,
@@ -12,7 +12,7 @@ player: {
         potions: 3
     },
     2:{
-        name: "naia",
+        name: "Naia",
         health: 100,
         strength: 10,
         strengthBonus: 0,
@@ -290,6 +290,8 @@ function recuadroTexto(texto){
     informacion.scrollTop = informacion.scrollHeight;
 }
 
+
+
 const consejos = [
     "En lo más profundo del Oeste, tras la segunda torre, habita aquello que custodia la salida. No entres sin estar preparado, pues el guardián del Castillo no perdona los pasos en falso.",
     "Necesitarás piedra amatista para entrar al ala este, dicen que esa piedra ayuda a debilitar a aquello que ahí habita ",
@@ -300,7 +302,7 @@ const consejos = [
 function bruja(){
     let posibilidad = Math.floor(Math.random() * consejos.length);
     let mensaje = consejos[posibilidad];
-    let texto = "Bien Kael... recuerda esto: ";
+    let texto = "Bien Naia... recuerda esto: ";
 
     recuadroTexto(texto + mensaje);
 }
@@ -326,4 +328,74 @@ if(noConsejo){
     });
 }
  
-    
+function muestraHeroe(){
+    let mostrar = document.getElementById("heroe");
+    let heroe = defaultGameState.player[2];
+
+    let contenido = `
+        <p>Nombre: ${heroe.name}</p>
+        <p>Vida: ${heroe.health}</p> 
+        <p>Fuerza: ${heroe.strength}</p> 
+        <p>Bonus fuerza: ${heroe.strengthBonus}</p> 
+        <p>Defensa: ${heroe.defense}</p>
+        <p>Bonus defensa: ${heroe.defenseBonus}</p> 
+        <p>Sala actual: ${heroe.currentRoom}</p> 
+        <p>Oro: ${heroe.gold}</p> 
+        <p>Pociones: ${heroe.potions}</p>
+    `;
+        
+    mostrar.innerHTML = contenido;
+}
+function cerrarInfo(){
+    let cerrar = document.getElementById("cerrar");
+    document.getElementById("datos-sala").innerHTML = "";
+    document.getElementById("datos-enemigo").innerHTML = "";
+}
+
+function muestraSala(){
+    let cajaEnemigo = document.getElementById("datos-enemigo");
+    if (cajaEnemigo) {
+        cajaEnemigo.innerHTML = "";
+    }
+    let mostrar = document.getElementById("datos-sala");
+    let sala = defaultGameState.map.rooms;
+    let aleatorio = Math.floor(Math.random() * sala.length);
+    let seleccion = sala[aleatorio];
+    let contenido = `
+        <p>Id: ${seleccion.id}</p>
+        <p>Probabilidad de monstruo: ${seleccion.monsterProb}</p>
+        <p>Tienda: ${seleccion.isShop}</p>
+        <p>Nombre: ${seleccion.name}</p>
+        <p>Descripcion: ${seleccion.description}</p>
+        <p>Norte: ${seleccion.north}</p>
+        <p>Sur: ${seleccion.south}</p>
+        <p>Este: ${seleccion.east}</p>
+        <p>Oeste: ${seleccion.west}</p>
+        <p>Imagen:</p>
+        <img src="../Imagenes/${seleccion.img}" alt= "${seleccion.name}">
+        
+    `;  
+    mostrar.innerHTML   = contenido;
+}
+
+function muestraEnemigo(){
+    let cajaSala = document.getElementById("datos-sala");
+    if (cajaSala) {
+        cajaSala.innerHTML = "";
+    }
+    let mostrar = document.getElementById("datos-enemigo");
+    let enemigos = defaultGameState.map.enemies;
+    let aleatorio = Math.floor(Math.random() * enemigos.length);
+    let seleccion = enemigos [aleatorio];
+    mostrar.innerHTML = `
+        <p>Nombre: ${seleccion.name}</p>
+        <p>Jefe: ${seleccion.isBoss}</p>
+        <p>Descripción: ${seleccion.description}</p>
+        <p>Vida: ${seleccion.health}</p>
+        <p>Fuerza: ${seleccion.strength}</p>
+        <p>Defensa: ${seleccion.defence}</p>
+        <p>Imagen:</p>
+        <img src= "../Imagenes/${seleccion.img}" alt= "${seleccion.name}">
+        
+    `;
+}

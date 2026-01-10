@@ -1,7 +1,7 @@
 const defaultGameState ={
 player: {
     1:{
-        name: "kael",
+        name: "Kael",
         health: 100,
         strength: 10,
         strengthBonus: 0,
@@ -12,7 +12,7 @@ player: {
         potions: 3
     },
     2:{
-        name: "naia",
+        name: "Naia",
         health: 100,
         strength: 10,
         strengthBonus: 0,
@@ -211,7 +211,7 @@ map: {
         {
             name: "La quimera",
             isBoss: false,
-            description: "Monstruo quimera cuya piel esta formada por hierro y gemas que lo atraviesan, posee garras afiladas y su mordedura es letal",
+            description: "Monstruo quimera cuya piel está formada por hierro y gemas que lo atraviesan, posee garras afiladas y su mordedura es letal.",
             health: 40,
             strength: 6,
             defence: 3,
@@ -220,7 +220,7 @@ map: {
         {
             name: "Espectro",
             isBoss: false,
-            description: "Monstruo que acecha en los lugares más oscuros, su cuerpo se fusiona con el entorno y es difícil verlo, si te alcanza te convertirá en un pedazo de cristal",
+            description: "Monstruo que acecha en los lugares más oscuros, su cuerpo se fusiona con el entorno y es difícil verlo, si te alcanza te convertirá en un pedazo de cristal.",
             health: 25,
             strength: 4,
             defence: 2,
@@ -229,7 +229,7 @@ map: {
         {
             name: "El coloso",
             isBoss: true,
-            description: "Es el guardián, vive en la parte más profunda del castillo. Es inmenso, su cuerpo esta formado por piedra volcánica, solo acercarte te mataría. Posee un bastón en cuya punta viven las almas de los antiguos héroes",
+            description: "Es el guardián, vive en la parte más profunda del castillo. Es inmenso, su cuerpo está formado por piedra volcánica, solo acercarte te mataría. Posee un bastón en cuya punta viven las almas de los antiguos héroes.",
             health: 70,
             strength: 9,
             defence: 7,
@@ -262,7 +262,7 @@ function mover(direccion) {
     let salaActual = localStorage.getItem("salaActual") || "entrada_mundo";
     let habitacionActual = defaultGameState.map.rooms.find(r=> r.name === salaActual);
     if(!habitacionActual || !habitacionActual[direccion]){
-        alert("No puedes ir hacia el ahí");
+        alert("No puedes ir hacia ahí");
         return;
     }
     let destino = habitacionActual[direccion];
@@ -291,6 +291,7 @@ function recuadroTexto(texto){
     informacion.innerHTML += `<p>${texto}</p>`;
     informacion.scrollTop = informacion.scrollHeight;
 }
+
 
 
 const consejos = [
@@ -328,3 +329,100 @@ if(noConsejo){
 
     });
 }
+ 
+function muestraHeroe(){
+    let mostrar = document.getElementById("heroe");
+    let heroe = defaultGameState.player[2];
+
+    let contenido = `
+        <p>Nombre: ${heroe.name}</p>
+        <p>Vida: ${heroe.health}</p> 
+        <p>Fuerza: ${heroe.strength}</p> 
+        <p>Bonus fuerza: ${heroe.strengthBonus}</p> 
+        <p>Defensa: ${heroe.defense}</p>
+        <p>Bonus defensa: ${heroe.defenseBonus}</p> 
+        <p>Sala actual: ${heroe.currentRoom}</p> 
+        <p>Oro: ${heroe.gold}</p> 
+        <p>Pociones: ${heroe.potions}</p>
+    `;
+        
+    mostrar.innerHTML = contenido;
+}
+function cerrarInfo(){
+    let cerrar = document.getElementById("cerrar");
+    document.getElementById("datos-sala").innerHTML = "";
+    document.getElementById("datos-enemigo").innerHTML = "";
+    document.getElementById("datos-interaccion").innerHTML = "";
+    document.getElementById("datos-gestion").innerHTML = "";
+
+    if(document.getElementById("menu_acciones")){
+        document.getElementById("menu_acciones").classList.remove("mostrar");
+    }
+    if(document.getElementById("opciones")){
+        document.getElementById("opciones").classList.remove("mostrar");
+    }
+}
+
+function muestraSala(){
+    let cajaEnemigo = document.getElementById("datos-enemigo");
+    if (cajaEnemigo) {
+        cajaEnemigo.innerHTML = "";
+    }
+    let mostrar = document.getElementById("datos-sala");
+    let sala = defaultGameState.map.rooms;
+    let aleatorio = Math.floor(Math.random() * sala.length);
+    let seleccion = sala[aleatorio];
+    let contenido = `
+        <p>Id: ${seleccion.id}</p>
+        <p>Probabilidad de monstruo: ${seleccion.monsterProb}</p>
+        <p>Tienda: ${seleccion.isShop}</p>
+        <p>Nombre: ${seleccion.name}</p>
+        <p>Descripcion: ${seleccion.description}</p>
+        <p>Norte: ${seleccion.north}</p>
+        <p>Sur: ${seleccion.south}</p>
+        <p>Este: ${seleccion.east}</p>
+        <p>Oeste: ${seleccion.west}</p>
+        <p>Imagen:</p>
+        <img src="../Imagenes/${seleccion.img}" alt= "${seleccion.name}">
+        
+    `;  
+    mostrar.innerHTML   = contenido;
+}
+
+function muestraEnemigo(){
+    let cajaSala = document.getElementById("datos-sala");
+    if (cajaSala) {
+        cajaSala.innerHTML = "";
+    }
+    let mostrar = document.getElementById("datos-enemigo");
+    let enemigos = defaultGameState.map.enemies;
+    let aleatorio = Math.floor(Math.random() * enemigos.length);
+    let seleccion = enemigos [aleatorio];
+    mostrar.innerHTML = `
+        <p>Nombre: ${seleccion.name}</p>
+        <p>Jefe: ${seleccion.isBoss}</p>
+        <p>Descripción: ${seleccion.description}</p>
+        <p>Vida: ${seleccion.health}</p>
+        <p>Fuerza: ${seleccion.strength}</p>
+        <p>Defensa: ${seleccion.defence}</p>
+        <p>Imagen:</p>
+        <img src= "../Imagenes/${seleccion.img}" alt= "${seleccion.name}">
+        
+    `;
+}
+
+function interaccion(){
+    document.getElementById("menu_acciones").classList.remove("mostrar");
+    let menu = document.querySelector(".acciones");
+    menu.classList.toggle("mostrar");
+}
+
+
+function gestion(){
+    document.getElementById("opciones").classList.remove("mostrar");
+    let menu = document.querySelector(".opciones_ocultas");
+    menu.classList.toggle("mostrar");
+}
+
+
+
