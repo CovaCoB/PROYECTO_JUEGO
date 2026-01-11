@@ -5,7 +5,7 @@ player: {
         health: 100,
         strength: 10,
         strengthBonus: 0,
-        defense:  8,
+        defense:  5,
         defenseBonus: 1,
         currentRoom: 1,
         gold: 120,
@@ -16,7 +16,7 @@ player: {
         health: 100,
         strength: 10,
         strengthBonus: 0,
-        defense:  8,
+        defense:  5,
         defenseBonus: 1,
         currentRoom: 1,
         gold: 120,
@@ -231,7 +231,7 @@ map: {
             isBoss: true,
             description: "Es el guardián, vive en la parte más profunda del castillo. Es inmenso, su cuerpo está formado por piedra volcánica, solo acercarte te mataría. Posee un bastón en cuya punta viven las almas de los antiguos héroes.",
             health: 70,
-            strength: 9,
+            strength: 10,
             defence: 7,
             img: "monstruo_final.png"
         }
@@ -293,7 +293,7 @@ function recuadroTexto(texto){
 }
 
 const consejos = [
-    "En lo más profundo del Oeste, tras la segunda torre, habita aquello que custodia la salida. No entres sin estar preparado, pues el guardián del Castillo no perdona los pasos en falso.",
+    "En lo más profundo del Oeste, tras la segunda torre, habita aquello que custodia la salida. No entres sin estar preparada, pues el guardián del Castillo no perdona los pasos en falso.",
     "Necesitarás piedra amatista para entrar al ala este, dicen que esa piedra ayuda a debilitar a aquello que ahí habita ",
     "A veces, retroceder al Sur es la única forma de encontrar el camino correcto.",
     "La forja del Este reparará tus armas y las reforzará con mi magia"
@@ -329,18 +329,20 @@ if(noConsejo){
 }
  
 function muestraHeroe(){
+    localStorage.setItem("verHeroe", "true");
     let mostrar = document.getElementById("heroe");
     let heroe = cargarPartida();
     let salaActual = localStorage.getItem("salaActual") || "entrada_mundo";
     let habitacionActual = defaultGameState.map.rooms.find(r=>r.name === salaActual);
     let habitacionId = habitacionActual.id;
+    let totalFuerza = heroe.strength + heroe.strengthBonus;
+    let totalDefensa = heroe.defense + heroe.defenseBonus;
     let contenido = `
+        <button onclick="muestraHeroe()">Muestra héroe</button> <button onclick="cerrarHeroe()">X</button>
         <p>Nombre: ${heroe.name}</p>
         <p>Vida: ${heroe.health}</p> 
-        <p>Fuerza: ${heroe.strength}</p> 
-        <p>Bonus fuerza: ${heroe.strengthBonus}</p> 
-        <p>Defensa: ${heroe.defense}</p>
-        <p>Bonus defensa: ${heroe.defenseBonus}</p> 
+        <p>Fuerza: ${totalFuerza}(${heroe.strength} + ${heroe.strengthBonus})</p> 
+        <p>Defensa: ${totalDefensa}(${heroe.defense} + ${heroe.defenseBonus})</p>
         <p>Sala actual: ${habitacionId}</p> 
         <p>Oro: ${heroe.gold}</p> 
         <p>Pociones: ${heroe.potions}</p>
@@ -348,38 +350,14 @@ function muestraHeroe(){
         
     mostrar.innerHTML = contenido;
 }
-
-function muestraEnemigo() {
-    let salaActual = localStorage.getItem("salaActual" || "entrada_mundo");
-    let monstruos = {
-        "castillo_boss": "El coloso",
-        "castillo_este2_monstruo": "La quimera",
-        "castillomonstruo2": "Espectro"
-    }
-
-    let nombreEnemigo = monstruos[salaActual];
-    let enemigo = defaultGameState.map.enemies.find(e=>e.name===nombreEnemigo);
-    if(enemigo){
-           let contenido = `
-        <p>FICHA DE ENEMIGO</p><br>
-        Nombre: ${enemigo.name}<br>
-        ¿Es jefe?: ${enemigo.isBoss ? "Sí" : "No"}<br> 
-        Vida: ${enemigo.health}<br> 
-        Fuerza: ${enemigo.strength}<br> 
-        Defensa: ${enemigo.defence}<br>
-        
-    `;   
-    
-    recuadroTexto(contenido); 
-    return enemigo;
-    }else {
-        recuadroTexto(`<p>No hay enemigos en esta sala.</p>`); 
-        return null;
-    }
+function cerrarHeroe() {
+    localStorage.setItem("verHeroe", "false");
+    let mostrar = document.getElementById("heroe");
+    mostrar.innerHTML = '<button onclick="muestraHeroe()">Muestra héroe</button>';
 }
 
+
 function cerrarInfo(){
-    let cerrar = document.getElementById("cerrar");
     document.getElementById("datos-sala").innerHTML = "";
     document.getElementById("datos-enemigo").innerHTML = "";
     document.getElementById("datos-interaccion").innerHTML = "";
@@ -454,7 +432,7 @@ function gestion(){
 }
 
 function cargarPartida(){
-    const personaje = localStorage.getItem("datosJugador");
+    const personaje = localStorage.getItem("datosNaia");
     if(personaje){
         return JSON.parse(personaje);
     }else{
@@ -471,7 +449,7 @@ if(iniciarPartida){
 }
 
 function guardarPartida(heroe){
-    localStorage.setItem("datosJugador", JSON.stringify(heroe));
+    localStorage.setItem("datosNaia", JSON.stringify(heroe));
 }
 let guardarProgreso = document.getElementById("guardar");
 if(guardarProgreso){
@@ -484,7 +462,7 @@ if(guardarProgreso){
 
 function buscarOro(){
     let heroe = cargarPartida();
-    let salaActual = localStorage.getItem("salaActual" || "entrada_mundo");
+    let salaActual = localStorage.getItem("salaActual") || "entrada_mundo";
     let habitacionActual = defaultGameState.map.rooms.find(r => r.name === salaActual);
 
     if(habitacionActual && habitacionActual.monsterProb >0){
@@ -517,6 +495,7 @@ function comprarPocion(){
     if(heroe.gold >= 3){
         heroe.gold-=3;
         heroe.potions+=1;
+        heroe.defenseBonus +=1;
         guardarPartida(heroe);
         let texto = `<p>Esta poción te será de gran ayuda en el viaje. Tienes ${heroe.potions} pociones y te quedan ${heroe.gold} monedas</p>`;
         recuadroTexto(texto);
@@ -538,7 +517,7 @@ function repararArma(){
     let heroe = cargarPartida();
     if(heroe.gold >=5){
         heroe.gold-=5;
-        heroe.defense += 2;
+        heroe.strengthBonus+= 2;
         guardarPartida(heroe);
         let texto = `<p>He arreglado tu arco, has sumado dos puntos de defensa, ahora tienes ${heroe.defense} puntos.</p>`;
         recuadroTexto(texto);
@@ -615,11 +594,20 @@ if(recuperar){
     });
 }
 
+
 let enemigoActual = null;
-function ataque(){
+
+function ataque() {
     let heroe = cargarPartida();
     let sala = localStorage.getItem("salaActual");
     let listaEnemigos = defaultGameState.map.enemies;
+
+    if (enemigoActual === null) {
+        let enemigoGuardado = localStorage.getItem("enemigoEnCombate");
+        if (enemigoGuardado) {
+            enemigoActual = JSON.parse(enemigoGuardado);
+        }
+    }
 
     if (enemigoActual === null) {
         if (sala === "castillo_este2_monstruo") {
@@ -627,44 +615,103 @@ function ataque(){
         } else if (sala === "castillomonstruo2") {
             enemigoActual = { ...listaEnemigos[1] }; 
         } else if (sala === "castillo_boss") {
-            enemigoActual = { ...listaEnemigos[2] }; 
+            enemigoActual = { ...listaEnemigos[2] };
         }
     }
 
-    if (enemigoActual === null){
+    if (enemigoActual === null) {
         recuadroTexto(`<p>Aquí no hay enemigos.</p>`);
         return;
     }
 
-    let dañoEnemigo = Math.max(1, heroe.strength - enemigoActual.defence);
-    enemigoActual.health-=dañoEnemigo;
+    let miFuerzaTotal = heroe.strength + heroe.strengthBonus;
+    let miDefensaTotal = heroe.defense + heroe.defenseBonus;
+    
+    let dañoEnemigo = Math.max(1, miFuerzaTotal - enemigoActual.defence);
+    enemigoActual.health -= dañoEnemigo;
+    
+    localStorage.setItem("enemigoEnCombate", JSON.stringify(enemigoActual));
+    
     recuadroTexto(`<p>Has atacado a ${enemigoActual.name} y le has hecho ${dañoEnemigo} de daño.</p>`);
 
-    if(enemigoActual.health<=0){
-        recuadroTexto(`<p>¡Has derrotado a ${enemigoActual.name}! Pero no te confíes...todavía se escuchan ruidos extraños de otras salas.</p>`);
+    if (enemigoActual.health <= 0) {
+        recuadroTexto(`<p>¡Has derrotado a ${enemigoActual.name}!</p>`);
         enemigoActual = null;
+        localStorage.removeItem("enemigoEnCombate"); 
+
+        setTimeout(function() {
+            
+            if (sala === "castillo_boss") {
+                localStorage.setItem("salaActual", "castilloNoBoss");
+                window.location.href = "../castilloNoBoss/noBossNaia.html";
+            } 
+            else if (sala === "castillo_este2_monstruo") {
+                localStorage.setItem("salaActual", "castillo_este2"); 
+                window.location.href = "../castillo_este2/castillo_este2NAIA.html"; 
+            } 
+            else if (sala === "castillomonstruo2") {
+                localStorage.setItem("salaActual", "castillo_este"); 
+                window.location.href = "../castillo_este/castillo_esteNAIA.html";
+            }
+        }, 1500);
         return;
     }
 
-    let dañoHeroe = Math.max(1, enemigoActual.strength - heroe.defense);
+    let dañoHeroe = Math.max(1, enemigoActual.strength - miDefensaTotal);
     heroe.health -= dañoHeroe;
-   
-    if(heroe.health<=0){
+
+    if (heroe.health <= 0) {
         recuadroTexto(`<p>${enemigoActual.name} te ha matado.</p>`);
         heroe.health = 10;
+        
         localStorage.setItem("salaActual", "entrada_mundo");
+        localStorage.removeItem("enemigoEnCombate");
         guardarPartida(heroe);
-        window.location.href = "entrada_mundo/entrada_NAIA.html";
+        
+        setTimeout(function() {
+            window.location.href = "../entrada_mundo/entrada_NAIA.html";
+        }, 1500);
         return;
     }
+
     guardarPartida(heroe);
     muestraHeroe();
-    recuadroTexto(`<p>${enemigoActual.name} te ha atacado y te ha hecho ${dañoHeroe} de daño.</p>`);
+    recuadroTexto(`<p>${enemigoActual.name} te ataca y te hace ${dañoHeroe} de daño.</p>`);
 }
+
 let pelea = document.getElementById("atacar");
-if(pelea){
-    pelea.addEventListener("click", function(e){
+if (pelea) {
+    pelea.addEventListener("click", function(e) {
         e.preventDefault();
         ataque();
     });
 }
+
+function resetearPersonaje(){
+ localStorage.removeItem("datosNaia");
+    localStorage.removeItem("enemigoEnCombate");
+    
+    let heroeNuevo = defaultGameState.player[2]; // Volvemos a Naia inicial
+    localStorage.setItem("datosNaia", JSON.stringify(heroeNuevo));
+    localStorage.setItem("verHeroe", "false"); 
+    localStorage.setItem("salaActual", "entrada_mundo");
+
+    recuadroTexto(`<p>Has reseteado correctamente tu personaje</p>`);
+    window.location.href = "../entrada_mundo/entrada_NAIA.html";
+}
+let resetear = document.getElementById("reseteo");
+if(resetear){
+    resetear.addEventListener("click", function(e){
+        e.preventDefault();
+        resetearPersonaje();
+    });
+}
+    
+
+document.addEventListener("DOMContentLoaded", function() {
+    let visible = localStorage.getItem("verHeroe");
+    
+    if (visible === "true") {
+        muestraHeroe();
+    }
+});

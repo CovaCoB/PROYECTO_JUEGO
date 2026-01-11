@@ -9,7 +9,7 @@
 </head>
 <body>
     <div class="contenedor_entrada">
-        <div class="cuadro_narrativa">
+        <div class="cuadro_narrativa" id="cuadro_narrativa">
              <p>
                 Te encuentras en el interior del castillo de AELORIA.<br> 
                 Sigue hacia el norte con mucho cuidado. <br>
@@ -19,7 +19,11 @@
         <div class="fondo_carta"></div>
         <div class="castillo"></div>
         <div class="imagen_carta"></div>  
-         <div class="botones">
+        <div class="texto_carta">
+            <div id="heroe">
+            <button onclick="muestraHeroe()">Muestra héroe</button></div>
+        </div>
+        <div class="botones">
             <div class="area_control">
         <button id="dir_norte"><img src="../Imagenes/flecha_norte.png" alt="flecha_norte"></button>
         <button id="dir_sur"><img src="../Imagenes/flecha_sur.png" alt="flecha_sur"></button>
@@ -27,6 +31,40 @@
         <button id="dir_oeste"><img src="../Imagenes/flecha_oeste1.png" alt="flecha_oeste"></button>
             </div>
         </div> 
+        <div class="seccion-info">
+            <div class="contenedor-botones-info">
+                <button onclick="muestraSala()">Muestra sala</button>
+                <button onclick="muestraEnemigo()">Muestra enemigo</button>
+                <button onclick="cerrarInfo()">X</button>
+            </div>
+            <div id="datos-sala"></div> 
+            <div id="datos-enemigo"></div> 
+            <div id="cerrar"></div>
+        </div>
+        <div class="seccion-info2">
+            <div class = "menu">
+                <button onclick="interaccion()">Interacción</button>
+                    <div id="menu_acciones" class="acciones">
+                       <button id="dinero">Buscar oro</button>
+                        <button id="pociones">Pociones</button>
+                        <button id="beberPocion">Beber poción</button>
+                        <button id="atacar">Atacar</button>
+                    </div>
+                <div id="datos-interaccion"></div>
+            </div>
+            <div class="menu2">
+                <button onclick="gestion()">⚙</button>
+                     <div id="opciones" class="opciones_ocultas">
+                        <button id="guardar">Guardar</button>
+                        <button id="cargar">Cargar partida</button>
+                        <button id="ayuda">Ayuda</button>
+                        <button id="reseteo">Resetear personaje</button>
+                    </div>
+                  
+                  <div id="datos-gestion"></div>
+            </div>
+            <button onclick="cerrarInfo()">X</button>
+        </div>
     </div>
     <script src="../defaultGameStateKael.js"></script>
 </body>
