@@ -262,7 +262,7 @@ function mover(direccion) {
     let salaActual = localStorage.getItem("salaActual") || "entrada_mundo";
     let habitacionActual = defaultGameState.map.rooms.find(r=> r.name === salaActual);
     if(!habitacionActual || !habitacionActual[direccion]){
-        alert("No puedes ir hacia ahí");
+        recuadroTexto(`<p>No puedes ir hacia ahí</p>`);
         return;
     }
     let destino = habitacionActual[direccion];
@@ -274,7 +274,7 @@ function mover(direccion) {
         localStorage.setItem("salaActual", destino);
         window.location.href = rutas[destino];
     }else {
-        alert("Ese camino no lleva a ninguna parte");
+        recuadroTexto(`<p>No puedes ir hacia ahí</p>`);
     }
 }
 
@@ -291,8 +291,6 @@ function recuadroTexto(texto){
     informacion.innerHTML += `<p>${texto}</p>`;
     informacion.scrollTop = informacion.scrollHeight;
 }
-
-
 
 const consejos = [
     "En lo más profundo del Oeste, tras la segunda torre, habita aquello que custodia la salida. No entres sin estar preparado, pues el guardián del Castillo no perdona los pasos en falso.",
@@ -332,8 +330,10 @@ if(noConsejo){
  
 function muestraHeroe(){
     let mostrar = document.getElementById("heroe");
-    let heroe = defaultGameState.player[2];
-
+    let heroe = cargarPartida();
+    let salaActual = localStorage.getItem("salaActual") || "entrada_mundo";
+    let habitacionActual = defaultGameState.map.rooms.find(r=>r.name === salaActual);
+    let habitacionId = habitacionActual.id;
     let contenido = `
         <p>Nombre: ${heroe.name}</p>
         <p>Vida: ${heroe.health}</p> 
@@ -341,13 +341,43 @@ function muestraHeroe(){
         <p>Bonus fuerza: ${heroe.strengthBonus}</p> 
         <p>Defensa: ${heroe.defense}</p>
         <p>Bonus defensa: ${heroe.defenseBonus}</p> 
-        <p>Sala actual: ${heroe.currentRoom}</p> 
+        <p>Sala actual: ${habitacionId}</p> 
         <p>Oro: ${heroe.gold}</p> 
         <p>Pociones: ${heroe.potions}</p>
     `;
         
     mostrar.innerHTML = contenido;
 }
+
+function muestraEnemigo() {
+    let salaActual = localStorage.getItem("salaActual" || "entrada_mundo");
+    let monstruos = {
+        "castillo_boss": "El coloso",
+        "castillo_este2_monstruo": "La quimera",
+        "castillomonstruo2": "Espectro"
+    }
+
+    let nombreEnemigo = monstruos[salaActual];
+    let enemigo = defaultGameState.map.enemies.find(e=>e.name===nombreEnemigo);
+    if(enemigo){
+           let contenido = `
+        <p>FICHA DE ENEMIGO</p><br>
+        Nombre: ${enemigo.name}<br>
+        ¿Es jefe?: ${enemigo.isBoss ? "Sí" : "No"}<br> 
+        Vida: ${enemigo.health}<br> 
+        Fuerza: ${enemigo.strength}<br> 
+        Defensa: ${enemigo.defence}<br>
+        
+    `;   
+    
+    recuadroTexto(contenido); 
+    return enemigo;
+    }else {
+        recuadroTexto(`<p>No hay enemigos en esta sala.</p>`); 
+        return null;
+    }
+}
+
 function cerrarInfo(){
     let cerrar = document.getElementById("cerrar");
     document.getElementById("datos-sala").innerHTML = "";
@@ -417,42 +447,85 @@ function interaccion(){
     menu.classList.toggle("mostrar");
 }
 
-
 function gestion(){
     document.getElementById("opciones").classList.remove("mostrar");
     let menu = document.querySelector(".opciones_ocultas");
     menu.classList.toggle("mostrar");
 }
 
-function buscarMochila(){
-    let heroe = defaultGameState.player[2];
-    let encontrado = Math.floor(Math.random() *10);
-    heroe.gold +=encontrado;
-
-    let texto= `<p>¡Hoy estás de suerte! has encontrado ${encontrado} monedas y ahora tienes ${heroe.gold} monedas de oro.</p>`;
-    recuadroTexto(texto);
-    let cartaHeroe = document.getElementById("heroe");
-    if(cartaHeroe && cartaHeroe !== ""){
-        muestraHeroe();
+function cargarPartida(){
+    const personaje = localStorage.getItem("datosJugador");
+    if(personaje){
+        return JSON.parse(personaje);
+    }else{
+        return defaultGameState.player[2];
     }
 }
-let botonMochila = document.getElementById("mochila");
+let iniciarPartida = document.getElementById("cargar");
+if(iniciarPartida){
+    iniciarPartida.addEventListener("click", function(e){
+        e.preventDefault();
+        cargarPartida();
+        recuadroTexto(`<p>Bienvenido/a de nuevo, comienza tu partida con los mismos datos</p>`);
+    });
+}
+
+function guardarPartida(heroe){
+    localStorage.setItem("datosJugador", JSON.stringify(heroe));
+}
+let guardarProgreso = document.getElementById("guardar");
+if(guardarProgreso){
+    guardarProgreso.addEventListener("click", function(e){
+        e.preventDefault();
+        cargarPartida();
+        recuadroTexto(`<p>Has guardado la partida.</p>`);
+    });
+}
+
+function buscarOro(){
+    let heroe = cargarPartida();
+    let salaActual = localStorage.getItem("salaActual" || "entrada_mundo");
+    let habitacionActual = defaultGameState.map.rooms.find(r => r.name === salaActual);
+
+    if(habitacionActual && habitacionActual.monsterProb >0){
+    let suerte = Math.random();
+    if(suerte > 0.5){
+        let encontrado = Math.floor(Math.random() *10) +1;
+        heroe.gold +=encontrado;
+        guardarPartida(heroe);
+        let texto= `<p>¡Hoy estás de suerte! has encontrado ${encontrado} monedas y ahora tienes ${heroe.gold} monedas de oro.</p>`;
+        recuadroTexto(texto);
+        muestraHeroe();
+    }else {
+        let texto= `<p>Aunque te has arriesgado buscando aquí, esta vez no había oro.</p>`;
+          recuadroTexto(texto);
+    }
+    }else {
+        recuadroTexto(`<p>Esta zona parece demasiado segura para encontrar oro, prueba en el castillo.</p>`);
+    }
+}
+let botonMochila = document.getElementById("dinero");
 if(botonMochila){
     botonMochila.addEventListener("click", function(e){
         e.preventDefault();
-        buscarMochila();
+        buscarOro();
     });
 }
 
 function comprarPocion(){
-    let heroe = defaultGameState.player[2];
-    heroe.gold-=3;
-    let texto = `<p>Gracias por comprar esta poción, te será muy útil en tu viaje. Te quedan ${heroe.gold} monedas</p>`;
-    recuadroTexto(texto);
-    let cartaHeroe = document.getElementById("heroe");
-    if(cartaHeroe && cartaHeroe !== ""){
+    let heroe = cargarPartida();
+    if(heroe.gold >= 3){
+        heroe.gold-=3;
+        heroe.potions+=1;
+        guardarPartida(heroe);
+        let texto = `<p>Esta poción te será de gran ayuda en el viaje. Tienes ${heroe.potions} pociones y te quedan ${heroe.gold} monedas</p>`;
+        recuadroTexto(texto);
+        muestraHeroe();
+    }else {
+        recuadroTexto(`<p>No tienes suficiente oro para comprar la poción, quizás encuentres algo en la mochila</p>`);
         muestraHeroe();
     }
+
 }
 let pocion = document.getElementById("comprar");
 if(pocion){
@@ -460,4 +533,136 @@ pocion.addEventListener("click", function(e){
     e.preventDefault();
     comprarPocion();
 });
+}
+function repararArma(){
+    let heroe = cargarPartida();
+    if(heroe.gold >=5){
+        heroe.gold-=5;
+        heroe.defense += 2;
+        guardarPartida(heroe);
+        let texto = `<p>He arreglado tu arco, has sumado dos puntos de defensa, ahora tienes ${heroe.defense} puntos.</p>`;
+        recuadroTexto(texto);
+        muestraHeroe();
+    }else {
+        recuadroTexto(`<p>No tienes suficiente oro para reparar tu arco, quizás encuentres algo en la mochila</p>`);
+        muestraHeroe();
+    }
+}
+let arma = document.getElementById("reparar");
+if(arma){
+arma.addEventListener("click", function(e){
+    e.preventDefault();
+    repararArma();
+});
+}
+function verPociones(){
+    let heroe = cargarPartida();
+    if(heroe.potions>0){
+        let texto = `<p>Tienes ${heroe.potions} pociones</p>`;
+        recuadroTexto(texto);
+        muestraHeroe();
+    }else {
+         recuadroTexto(`<p>No tienes pociones en este momento</p>`);
+         muestraHeroe();
+    }
+}
+let pociones = document.getElementById("pociones");
+if(pociones){
+    pociones.addEventListener("click", function(e){
+        e.preventDefault();
+        verPociones();
+    });
+}
+
+function cuadroAyuda(){
+    let texto = `
+        <p>Haz click en las flechas para moverte por el mapa.</p>
+        <p>Presta mucha atención a este cuadro de texto, te indicará a qué dirección ir.</p>
+        <p>El botón de "Muestra sala" te ofrece datos sobre las salas del mapa, direcciones posibles, probabilidad de encontrar un monstruo y una foto representativa.</p>
+        <p>El botón "Muestra enemigo" te enseña los monstruos que se encuentran en el mapa y su poder. Te ayudará a entrenar a tu personaje antes de entrar al castillo.</p>
+        <p>El oro se encuentra distribuido por zonas específicas del mapa, cuando llegues a una sala haz click en el botón "Buscar oro".</p>
+        <p>Haz click en el botón de "Pociones" para conocer cuantas posees.</p>
+        <p>No te olvides de guardar tu partida.</p>
+    `;
+    recuadroTexto(texto);
+}
+let botonAyuda = document.getElementById("ayuda"); 
+if (botonAyuda) {
+    botonAyuda.addEventListener("click", function(e) {
+        e.preventDefault();
+        cuadroAyuda();
+    });
+}
+
+function recuperarVida(){
+    let heroe = cargarPartida();
+    if(heroe.potions>0){
+        heroe.potions--;
+        heroe.health+=10;
+        guardarPartida(heroe);
+        recuadroTexto(`<p>Has recuperado 10 puntos de vida.</p>`);
+        muestraHeroe();
+    }else{
+        recuadroTexto(`<p>No tienes suficientes pociones, ve a la tienda a adquirir más.</p>`);
+    }
+}
+
+let recuperar = document.getElementById("beberPocion");
+if(recuperar){
+    recuperar.addEventListener("click", function(e){
+        e.preventDefault();
+        recuperarVida();
+    });
+}
+
+let enemigoActual = null;
+function ataque(){
+    let heroe = cargarPartida();
+    let sala = localStorage.getItem("salaActual");
+    let listaEnemigos = defaultGameState.map.enemies;
+
+    if (enemigoActual === null) {
+        if (sala === "castillo_este2_monstruo") {
+            enemigoActual = { ...listaEnemigos[0] }; 
+        } else if (sala === "castillomonstruo2") {
+            enemigoActual = { ...listaEnemigos[1] }; 
+        } else if (sala === "castillo_boss") {
+            enemigoActual = { ...listaEnemigos[2] }; 
+        }
+    }
+
+    if (enemigoActual === null) return;
+    
+
+    let dañoEnemigo = Math.max(1, heroe.strength - enemigoActual.defence);
+    enemigoActual.health-=dañoEnemigo;
+    recuadroTexto(`<p>Has atacado a ${enemigoActual.name} y le has hecho ${dañoEnemigo} de daño.</p>`);
+
+    if(enemigoActual.health<=0){
+        recuadroTexto(`<p>¡Has derrotado a ${enemigoActual.name}! Pero no te confíes...todavía se escuchan ruidos extraños de otras salas.</p>`);
+        enemigoActual = null;
+        return;
+    }
+
+    let dañoHeroe = Math.max(1, enemigoActual.strength - heroe.defense);
+    heroe.health -= dañoHeroe;
+   
+    if(heroe.health<=0){
+        recuadroTexto(`<p>${enemigoActual.name} te ha matado.</p>`);
+        heroe.health = 10;
+        localStorage.setItem("salaActual", "entrada_mundo");
+        guardarPartida(heroe);
+        window.location.href = "entrada_mundo/entrada_NAIA.html";
+        return;
+    }
+    guardarPartida(heroe);
+    muestraHeroe();
+    recuadroTexto(`<p>${enemigoActual.name} te ha atacado y te ha hecho ${dañoHeroe} de daño.</p>`);
+}
+let pelea = document.getElementById("atacar");
+if(pelea){
+    pelea.addEventListener("click", function(e){
+        e.preventDefault();
+        ataque();
+    });
 }

@@ -15,8 +15,11 @@
                 Al cruzar la puerta de la forja, el calor y el aroma de acero y pociones te envuelven. <br>
                 El anciano te recibe con una mirada profunda, evaluando quién eres y qué buscas. <br>
                 Él permanece allí, observándote con paciencia, listo para escuchar lo que tienes que decir.<br>
-                <button id="comprar">Comprar poción (3 monedas de Oro)</button> | <button id="reparar">Reparar arma (5 monedas de Oro)</button>
             </p>
+        </div>
+        <div class="botones_forja">
+            <button id="comprar">Comprar poción (3 monedas de Oro)</button>
+            <button id="reparar">Reparar arma (5 monedas de Oro)</button>
         </div>
         <div class="fondo_carta"></div>
          <div class="anciano"></div>
@@ -48,18 +51,18 @@
             <div class = "menu">
                 <button onclick="interaccion()">Interacción</button>
                     <div id="menu_acciones" class="acciones">
-                       <button id="mochila">Mochila</button>
+                       <button id="dinero">Buscar oro</button>
                         <button id="pociones">Pociones</button>
-                        <button id="ayuda">Ayuda</button>
+                        <button id="beberPocion">Beber poción</button>
+                        <button id="atacar">Atacar</button>
                     </div>
                 <div id="datos-interaccion"></div>
             </div>
             <div class="menu2">
                 <button onclick="gestion()">⚙</button>
-                    <div id="opciones" class="opciones_ocultas">
-                        <button onclick="guardar()">Guardar</button>
-                        <button onclick="cargar()">Cargar partida</button>
-                        <button onclick="ajustes()">Ajustes</button>
+                     <div id="opciones" class="opciones_ocultas">
+                        <button id="guardar">Guardar</button>
+                        <button id="cargar">Cargar partida</button>
                     </div>
                   
                   <div id="datos-gestion"></div>
