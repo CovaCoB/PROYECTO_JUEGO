@@ -215,7 +215,7 @@ map: {
             health: 40,
             strength: 6,
             defence: 3,
-            img: "monstruo3.png"
+            img: "monstruo3_small.png"
         },
         {
             name: "Espectro",
@@ -224,7 +224,7 @@ map: {
             health: 25,
             strength: 4,
             defence: 2,
-            img: "monstruo2transparente.png"
+            img: "monstruo2_small.png"
         },
         {
             name: "El coloso",
@@ -233,7 +233,7 @@ map: {
             health: 70,
             strength: 10,
             defence: 7,
-            img: "monstruo_final.png"
+            img: "monstruo_final_big.png"
         }
     ]
 }

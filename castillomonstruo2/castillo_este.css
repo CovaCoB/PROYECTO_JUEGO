@@ -10,13 +10,13 @@
 .monstruo2 {
     position: absolute;
     z-index: 30;
-    height: 500px;
-    width: 300px;
-    background-image: url('../Imagenes/monstruo2transparente.png');
+    height: 400px;
+    width: 200px;
+    background-image: url('../Imagenes/monstruo2_small.png');
     background-position: center;
     background-repeat: no-repeat;
     background-size: contain;
-    top: 60%;
+    top: 70%;
     left: 30%;
     transform: translate(-50%, -50%);
 }
