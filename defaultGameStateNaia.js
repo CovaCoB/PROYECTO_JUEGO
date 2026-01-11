@@ -631,8 +631,10 @@ function ataque(){
         }
     }
 
-    if (enemigoActual === null) return;
-    
+    if (enemigoActual === null){
+        recuadroTexto(`<p>Aquí no hay enemigos.</p>`);
+        return;
+    }
 
     let dañoEnemigo = Math.max(1, heroe.strength - enemigoActual.defence);
     enemigoActual.health-=dañoEnemigo;
