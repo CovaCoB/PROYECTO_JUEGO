@@ -1,3 +1,4 @@
+//los comentarios del código están en la version de Kael.
 const defaultGameState ={
 player: {
     1:{
@@ -136,7 +137,7 @@ map: {
         },
         {
             id: 10,
-            monsterProb: 0.2,
+            monsterProb: 0.02,
             isShop: false,
             name: "castillo_boss",
             description: "Interior del castillo. Boss final",
@@ -172,7 +173,7 @@ map: {
         },
         {
             id: 13,
-            monsterProb: 0.2,
+            monsterProb: 0.30,
             isShop: false,
             name: "castillomonstruo2",
             description: "Interior del castillo. Ala este, primer monstruo",
@@ -196,7 +197,7 @@ map: {
         },
         {
             id: 15,
-            monsterProb: 0.2,
+            monsterProb: 0.20,
             isShop: false,
             name: "castillo_este2_monstruo",
             description: "Interior del castillo. Cámara de los arcos, segundo monstruo",
@@ -211,28 +212,28 @@ map: {
         {
             name: "La quimera",
             isBoss: false,
-            description: "Monstruo quimera cuya piel está formada por hierro y gemas que lo atraviesan, posee garras afiladas y su mordedura es letal.",
+            description: "Monstruo quimera cuya piel esta formada por hierro y gemas que lo atraviesan, posee garras afiladas y su mordedura es letal",
             health: 40,
-            strength: 6,
-            defence: 3,
+            strength: 7,
+            defence: 5,
             img: "monstruo3_small.png"
         },
         {
             name: "Espectro",
             isBoss: false,
-            description: "Monstruo que acecha en los lugares más oscuros, su cuerpo se fusiona con el entorno y es difícil verlo, si te alcanza te convertirá en un pedazo de cristal.",
+            description: "Monstruo que acecha en los lugares más oscuros, su cuerpo se fusiona con el entorno y es difícil verlo, si te alcanza te convertirá en un pedazo de cristal",
             health: 25,
-            strength: 4,
-            defence: 2,
+            strength: 6,
+            defence: 3,
             img: "monstruo2_small.png"
         },
         {
             name: "El coloso",
             isBoss: true,
-            description: "Es el guardián, vive en la parte más profunda del castillo. Es inmenso, su cuerpo está formado por piedra volcánica, solo acercarte te mataría. Posee un bastón en cuya punta viven las almas de los antiguos héroes.",
-            health: 70,
-            strength: 10,
-            defence: 7,
+            description: "Es el guardián, vive en la parte más profunda del castillo. Es inmenso, su cuerpo esta formado por piedra volcánica, solo acercarte te mataría. Posee un bastón en cuya punta viven las almas de los antiguos héroes",
+            health: 100,
+            strength: 15,
+            defence: 10,
             img: "monstruo_final_big.png"
         }
     ]
@@ -258,23 +259,43 @@ const rutas ={
 };
 
 
+
 function mover(direccion) {
     let salaActual = localStorage.getItem("salaActual") || "entrada_mundo";
-    let habitacionActual = defaultGameState.map.rooms.find(r=> r.name === salaActual);
-    if(!habitacionActual || !habitacionActual[direccion]){
+    let habitacionActual = defaultGameState.map.rooms.find(r => r.name === salaActual);
+
+    if (!habitacionActual || !habitacionActual[direccion]) {
         recuadroTexto(`<p>No puedes ir hacia ahí</p>`);
         return;
     }
+
     let destino = habitacionActual[direccion];
-    if(Array.isArray(destino)){
-      let random = Math.random();
-      destino = (random < 0.20) ? destino[1] : destino[0];
+    let random = Math.random();
+
+    if (Array.isArray(destino)) {
+        if (destino.includes("castillomonstruo2")) {
+            destino = (random <= 0.30) ? "castillomonstruo2" : "castillo_este";
+        } 
+        
+        else if (destino.includes("castillo_boss")) {
+            destino = (random <= 0.02) ? "castillo_boss" : "castilloNoBoss";
+        }
+      
+        else if (destino.includes("castillo_este2_monstruo")) {
+            destino = (random <= 0.20) ? "castillo_este2_monstruo": "castillo_este2";
+        }
+        else if (destino.includes("paisaje_izq_bruja")) {
+            destino = (random <= 0.20) ? "paisaje_izq_bruja": "paisaje_izq";
+        }
+        else {
+            destino = destino[0];
+        }
     }
-    if(rutas[destino]){
+    if (rutas[destino]) {
         localStorage.setItem("salaActual", destino);
         window.location.href = rutas[destino];
-    }else {
-        recuadroTexto(`<p>No puedes ir hacia ahí</p>`);
+    } else {
+        recuadroTexto(`<p>No puedes ir hacia ahí (Ruta no encontrada)</p>`);
     }
 }
 
@@ -471,11 +492,11 @@ function buscarOro(){
         let encontrado = Math.floor(Math.random() *10) +1;
         heroe.gold +=encontrado;
         guardarPartida(heroe);
-        let texto= `<p>¡Hoy estás de suerte! has encontrado ${encontrado} monedas y ahora tienes ${heroe.gold} monedas de oro.</p>`;
+        let texto= `<p>¡Qué bien! has encontrado ${encontrado} monedas y ahora tienes ${heroe.gold} monedas de oro.</p>`;
         recuadroTexto(texto);
         muestraHeroe();
     }else {
-        let texto= `<p>Aunque te has arriesgado buscando aquí, esta vez no había oro.</p>`;
+        let texto= `<p>No parece que haya más oro...</p>`;
           recuadroTexto(texto);
     }
     }else {
@@ -653,7 +674,7 @@ function ataque() {
                 localStorage.setItem("salaActual", "castillo_este"); 
                 window.location.href = "../castillo_este/castillo_esteNAIA.html";
             }
-        }, 1500);
+        }, 2000);
         return;
     }
 
@@ -670,7 +691,7 @@ function ataque() {
         
         setTimeout(function() {
             window.location.href = "../entrada_mundo/entrada_NAIA.html";
-        }, 1500);
+        }, 2000);
         return;
     }
 

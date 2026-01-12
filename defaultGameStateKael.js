@@ -1,3 +1,6 @@
+/*se crea el objeto literal con sus dos propiedades.
+Como diseñé los monstruos creando un nuevo html con la foto de ellos, algunas direcciones son arrays de los dos html. 
+*/
 const defaultGameState ={
 player: {
     1:{
@@ -136,7 +139,7 @@ map: {
         },
         {
             id: 10,
-            monsterProb: 0.2,
+            monsterProb: 0.02,
             isShop: false,
             name: "castillo_boss",
             description: "Interior del castillo. Boss final",
@@ -172,7 +175,7 @@ map: {
         },
         {
             id: 13,
-            monsterProb: 0.2,
+            monsterProb: 0.30,
             isShop: false,
             name: "castillomonstruo2",
             description: "Interior del castillo. Ala este, primer monstruo",
@@ -196,7 +199,7 @@ map: {
         },
         {
             id: 15,
-            monsterProb: 0.2,
+            monsterProb: 0.20,
             isShop: false,
             name: "castillo_este2_monstruo",
             description: "Interior del castillo. Cámara de los arcos, segundo monstruo",
@@ -213,8 +216,8 @@ map: {
             isBoss: false,
             description: "Monstruo quimera cuya piel esta formada por hierro y gemas que lo atraviesan, posee garras afiladas y su mordedura es letal",
             health: 40,
-            strength: 6,
-            defence: 3,
+            strength: 7,
+            defence: 5,
             img: "monstruo3_small.png"
         },
         {
@@ -222,22 +225,26 @@ map: {
             isBoss: false,
             description: "Monstruo que acecha en los lugares más oscuros, su cuerpo se fusiona con el entorno y es difícil verlo, si te alcanza te convertirá en un pedazo de cristal",
             health: 25,
-            strength: 4,
-            defence: 2,
+            strength: 6,
+            defence: 3,
             img: "monstruo2_small.png"
         },
         {
             name: "El coloso",
             isBoss: true,
             description: "Es el guardián, vive en la parte más profunda del castillo. Es inmenso, su cuerpo esta formado por piedra volcánica, solo acercarte te mataría. Posee un bastón en cuya punta viven las almas de los antiguos héroes",
-            health: 70,
-            strength: 9,
-            defence: 7,
+            health: 100,
+            strength: 15,
+            defence: 10,
             img: "monstruo_final_big.png"
         }
     ]
 }
 };
+/*
+Se crea la constante rutas, de tal manera que introduciendo la clave nos dirige correctamente al destino.
+Introduzco la ruta absoluta para que no me de fallos cuando el personaje comience a moverse por el mapa.
+*/
 const rutas ={
     "entrada_mundo": "/entrada_mundo/entrada_KAEL.html",
     "forja": "/forja/forja_KAEL.html",
@@ -256,40 +263,78 @@ const rutas ={
     "castillo_este2_monstruo": "/castillo_este2_monstruo/castillo_este2_monstruoKAEL.html"
 };
 
+/*
+Obtengo la sala actual guardada en el localStorage. Si no existe, posición inicial.
+Se recorre el array de rooms y se busca el nombre que coincida con la sala actual y se guarda en habitacionActual.
+Se comprueba que la habitación exista y que se puede ir hacia esa dirección.
+El movimiento del jugador se guarda en destino.
+*/
+
 function mover(direccion) {
     let salaActual = localStorage.getItem("salaActual") || "entrada_mundo";
-    let habitacionActual = defaultGameState.map.rooms.find(r=> r.name === salaActual);
-    if(!habitacionActual || !habitacionActual[direccion]){
+    let habitacionActual = defaultGameState.map.rooms.find(r => r.name === salaActual);
+
+    if (!habitacionActual || !habitacionActual[direccion]) {
         recuadroTexto(`<p>No puedes ir hacia ahí</p>`);
         return;
     }
+
     let destino = habitacionActual[direccion];
-    if(Array.isArray(destino)){
-      let random = Math.random();
-      destino = (random < 0.20) ? destino[1] : destino[0];
+    /*
+    Se crea la variable random que se usará para generar la probabilidad de encontrar un monstruo dependiendo el tipo.
+    Al principio habia creado un if(Array.isArray(destino)){destino = (random < 0.02) ? destino[1]:destino[0];} Pero no
+    podía darle más probabilidad a un monstruo que a otro porque directamente cogía del array de rooms la habitación[1] que
+    es la que tiene el monstruo. Al final, diseñé el programa con includes buscando por clave.
+    */
+    let random = Math.random();
+
+    if (Array.isArray(destino)) {
+        if (destino.includes("castillomonstruo2")) {
+            destino = (random <= 0.30) ? "castillomonstruo2" : "castillo_este";
+        } 
+        
+        else if (destino.includes("castillo_boss")) {
+            destino = (random <= 0.02) ? "castillo_boss" : "castilloNoBoss";
+        }
+      
+        else if (destino.includes("castillo_este2_monstruo")) {
+            destino = (random <= 0.20) ? "castillo_este2_monstruo": "castillo_este2";
+        }
+        else if (destino.includes("paisaje_izq_bruja")) {
+            destino = (random <= 0.20) ? "paisaje_izq_bruja": "paisaje_izq";
+        }
+        else {
+            destino = destino[0];
+        }
     }
-    if(rutas[destino]){
+    //Se guarda en el local storage el nombre con la nueva sala, asi se puede recordar la posicion del jugador para cambiar a otra.
+    if (rutas[destino]) {
         localStorage.setItem("salaActual", destino);
         window.location.href = rutas[destino];
-    }else {
-        recuadroTexto(`<p>No puedes ir hacia ahí</p>`);
+    } else {
+        recuadroTexto(`<p>No puedes ir hacia ahí (Ruta no encontrada)</p>`);
     }
 }
 
-//Asignamos al id del html el evento click que redirige a la ruta norte con la funcion.
+//Busco en el html los elementos con esas id y al hacer click se ejecuta la función mover();
 document.getElementById("dir_norte").addEventListener("click", ()=>mover("north"));
 document.getElementById("dir_sur").addEventListener("click", ()=>mover("south"));
 document.getElementById("dir_este").addEventListener("click", ()=>mover("east"));
 document.getElementById("dir_oeste").addEventListener("click", ()=>mover("west"));
 
-//añadir al recuadro de información texto y que exista scroll
+//añadir al recuadro de información texto y que exista scroll. Se añade al css "overflow-y:auto;" para que funcione el scroll.
 
 function recuadroTexto(texto){
     const informacion = document.getElementById("cuadro_narrativa");
     informacion.innerHTML += `<p>${texto}</p>`;
     informacion.scrollTop = informacion.scrollHeight;
 }
-
+/*
+Introduje un personaje de bruja por la historia que diseñé para el juego. Hice una constante con diferentes consejos
+que se activarán aleatoriamente. Es decir, primero la bruja no está siempre en esa zona, aparece como los monstruos con
+cierta probabilidad. Además, si seleccionas el botón para el consejo no siempre será el mismo, se muestran aleatoriamente
+estos cuatro.
+*/
 const consejos = [
     "En lo más profundo del Oeste, tras la segunda torre, habita aquello que custodia la salida. No entres sin estar preparado, pues el guardián del Castillo no perdona los pasos en falso.",
     "Necesitarás piedra amatista para entrar al ala este, dicen que esa piedra ayuda a debilitar a aquello que ahí habita ",
@@ -300,10 +345,12 @@ const consejos = [
 function bruja(){
     let posibilidad = Math.floor(Math.random() * consejos.length);
     let mensaje = consejos[posibilidad];
+    //texto adaptado a Kael.
     let texto = "Bien Kael... recuerda esto: ";
-
+    //como fui modificando el juego, a lo largo de este js se encuentra la funcion de recuadroTexto que llamo aquí.
     recuadroTexto(texto + mensaje);
 }
+//la funcion bruja(); se activa con el evento click que surge al pulsar el botón de aceptar consejo. Se enlaza con el id que está en el html.
 let brujaHabla = document.getElementById("hablarBruja");
 if(brujaHabla){
     brujaHabla.addEventListener("click", function(e){
@@ -325,7 +372,49 @@ if(noConsejo){
 
     });
 }
- 
+/*
+He creado un botón en el html para cargar la partida, de tal manera que busca en localStorage los datos guardados del jugador
+y si existen los devuelve como objeto. Se utiliza como "mediador de lenguaje" JSON porque adapta las entradas de datos en el localStorage
+que solo almacena texto y viceversa. Si no encuentra datos del personaje genera la carta con los datos de inicio.
+*/
+function cargarPartida(){
+    const personaje = localStorage.getItem("datosKael");
+    if(personaje){
+        return JSON.parse(personaje);
+    }else{
+        return defaultGameState.player[1];
+    }
+}
+let iniciarPartida = document.getElementById("cargar");
+if(iniciarPartida){
+    iniciarPartida.addEventListener("click", function(e){
+        e.preventDefault();
+        cargarPartida();
+        recuadroTexto(`<p>Bienvenido/a de nuevo, comienza tu partida con los mismos datos</p>`);
+    });
+}
+
+//Se guardan los datos en localStorage en formato texto mediante JSON.stringify.
+function guardarPartida(heroe){
+    localStorage.setItem("datosKael", JSON.stringify(heroe));
+}
+let guardarProgreso = document.getElementById("guardar");
+if(guardarProgreso){
+    guardarProgreso.addEventListener("click", function(e){
+        e.preventDefault();
+        cargarPartida();
+        recuadroTexto(`<p>Has guardado la partida.</p>`);
+    });
+}
+/*
+Esta es la carta del heroe que se va actualizando mientras se juega.
+Se guarda en localStorage la clave: valor.
+El botón del html tiene un id heroe. Uso la función cargarPartida();
+Nuavemente, guardo la sala actual guardada en el localStorage. Si no existe, posición inicial.
+Se comprueba que aparezca su nombre en el array y se muestra su id. Esto es necesario para que la carta del heroe
+vaya actualizando el id de la sala según va avanzando.
+Creo dos variables que sumen la fuerza con su bonus al igual que con fuerza y así mostrarlo en la carta.
+*/
 function muestraHeroe(){
     localStorage.setItem("verHeroe", "true");
     let mostrar = document.getElementById("heroe");
@@ -348,13 +437,14 @@ function muestraHeroe(){
         
     mostrar.innerHTML = contenido;
 }
+//dar opción a cerrar la pestaña con los items del jugador.
 function cerrarHeroe() {
     localStorage.setItem("verHeroe", "false");
     let mostrar = document.getElementById("heroe");
+    //muestro el botón porque esto cerraba todo y luego no la podía abrir.
     mostrar.innerHTML = '<button onclick="muestraHeroe()">Muestra héroe</button>';
 }
-
-
+//Esta función sirve para cerrar el resto de botones.
 function cerrarInfo(){
     document.getElementById("datos-sala").innerHTML = "";
     document.getElementById("datos-enemigo").innerHTML = "";
@@ -370,10 +460,15 @@ function cerrarInfo(){
 }
 
 function muestraSala(){
+    //Tuve que generar estas líneas para que se cerrase la caja enemigo cuando se abriese la caja de sala.
     let cajaEnemigo = document.getElementById("datos-enemigo");
     if (cajaEnemigo) {
         cajaEnemigo.innerHTML = "";
     }
+    /*Genero de manera aleatoria una sala que guardo en una variable y que usaré para acceder a los datos de la sala
+    adaptados a la sala que salió de aleatorio. 
+    Genero la imagen con html.
+    */
     let mostrar = document.getElementById("datos-sala");
     let sala = defaultGameState.map.rooms;
     let aleatorio = Math.floor(Math.random() * sala.length);
@@ -394,7 +489,7 @@ function muestraSala(){
     `;  
     mostrar.innerHTML   = contenido;
 }
-
+//Misma manera que la anterior.
 function muestraEnemigo(){
     let cajaSala = document.getElementById("datos-sala");
     if (cajaSala) {
@@ -416,6 +511,12 @@ function muestraEnemigo(){
         
     `;
 }
+/*
+Tanto para interaccion como gestion planteé la misma funcion: necesitaba dos botones que hiciesen de menu
+que al hacerle click fuese un desplegable de mas botones pero que se pudiesen ocultar para que no fuese incómodo para
+el usuario que juega. Para ello, se alterna eliminar con monstrar. Con remove oculto el menu y con toggle lo abro y cierro
+alternando estos dos botones.
+*/
 
 function interaccion(){
     document.getElementById("menu_acciones").classList.remove("mostrar");
@@ -429,35 +530,14 @@ function gestion(){
     menu.classList.toggle("mostrar");
 }
 
-function cargarPartida(){
-    const personaje = localStorage.getItem("datosKael");
-    if(personaje){
-        return JSON.parse(personaje);
-    }else{
-        return defaultGameState.player[1];
-    }
-}
-let iniciarPartida = document.getElementById("cargar");
-if(iniciarPartida){
-    iniciarPartida.addEventListener("click", function(e){
-        e.preventDefault();
-        cargarPartida();
-        recuadroTexto(`<p>Bienvenido/a de nuevo, comienza tu partida con los mismos datos</p>`);
-    });
-}
-
-function guardarPartida(heroe){
-    localStorage.setItem("datosKael", JSON.stringify(heroe));
-}
-let guardarProgreso = document.getElementById("guardar");
-if(guardarProgreso){
-    guardarProgreso.addEventListener("click", function(e){
-        e.preventDefault();
-        cargarPartida();
-        recuadroTexto(`<p>Has guardado la partida.</p>`);
-    });
-}
-
+/*
+Misma manera de proceder que antes para donde esta el personaje y se mueva por el mapa.
+Cargo el personaje con sus datos.
+Si la zona en la que está es >0 en probabilidad de que salga un monstruo, entonces aparece oro.
+Aquí también le apliqué un random para que no encontrase siempre oro aunque sea una sala con monstruo, para que fuese
+más realista.
+Cuando encuentra oro se suman y se guardan los datos del personaje.
+*/
 function buscarOro(){
     let heroe = cargarPartida();
     let salaActual = localStorage.getItem("salaActual") || "entrada_mundo";
@@ -469,11 +549,11 @@ function buscarOro(){
         let encontrado = Math.floor(Math.random() *10) +1;
         heroe.gold +=encontrado;
         guardarPartida(heroe);
-        let texto= `<p>¡Hoy estás de suerte! has encontrado ${encontrado} monedas y ahora tienes ${heroe.gold} monedas de oro.</p>`;
+        let texto= `<p>¡Qué bien! has encontrado ${encontrado} monedas y ahora tienes ${heroe.gold} monedas de oro.</p>`;
         recuadroTexto(texto);
         muestraHeroe();
     }else {
-        let texto= `<p>Aunque te has arriesgado buscando aquí, esta vez no había oro.</p>`;
+        let texto= `<p>No parece que haya más oro...</p>`;
           recuadroTexto(texto);
     }
     }else {
@@ -488,6 +568,10 @@ if(botonMochila){
     });
 }
 
+/*
+Si el personaje adquiere una poción, diseñé que además le sumase 1 de bonus de defensa. Mi lógica es que si compras pociones
+te ayudarán a poder defenderte con los monstruos al poder recuperarte.
+*/
 function comprarPocion(){
     let heroe = cargarPartida();
     if(heroe.gold >= 3){
@@ -510,6 +594,8 @@ pocion.addEventListener("click", function(e){
     e.preventDefault();
     comprarPocion();
 });
+
+//reparar arma tambien te suma en fuerza. Es una función que añadí por seguir la lógica de mi diseño.
 }
 function repararArma(){
     let heroe = cargarPartida();
@@ -521,7 +607,7 @@ function repararArma(){
         recuadroTexto(texto);
         muestraHeroe();
     }else {
-        recuadroTexto(`<p>No tienes suficiente oro para reparar tu arco, quizás encuentres algo en la mochila</p>`);
+        recuadroTexto(`<p>No tienes suficiente oro para reparar tu lanza, quizás encuentres algo en la mochila</p>`);
         muestraHeroe();
     }
 }
@@ -532,6 +618,7 @@ arma.addEventListener("click", function(e){
     repararArma();
 });
 }
+//si no tiene pociones le sale un aviso en el recuadro de juego.
 function verPociones(){
     let heroe = cargarPartida();
     if(heroe.potions>0){
@@ -550,6 +637,8 @@ if(pociones){
         verPociones();
     });
 }
+
+//texto para el botón de ayuda del juego.
 
 function cuadroAyuda(){
     let texto = `
@@ -571,6 +660,8 @@ if (botonAyuda) {
     });
 }
 
+//El heroe recupera vida al tomar pociones. 
+
 function recuperarVida(){
     let heroe = cargarPartida();
     if(heroe.potions>0){
@@ -591,7 +682,10 @@ if(recuperar){
         recuperarVida();
     });
 }
-
+/*
+Se inicializa enemigoActual fuera para que pueda bajarle la vida. Si estuviese dentro se reiniciaría todo el tiempo y el
+personaje no podría vencerlo.
+*/
 
 let enemigoActual = null;
 
@@ -599,14 +693,14 @@ function ataque() {
     let heroe = cargarPartida();
     let sala = localStorage.getItem("salaActual");
     let listaEnemigos = defaultGameState.map.enemies;
-
+    //Se mira si hay enemigos guardados. Se convierte el string JSON a formato javascript y se asigna a enemigoActual.
     if (enemigoActual === null) {
         let enemigoGuardado = localStorage.getItem("enemigoEnCombate");
         if (enemigoGuardado) {
             enemigoActual = JSON.parse(enemigoGuardado);
         }
     }
-
+    //Si no hay enemigo cargado, se crea una copia. Se utiliza spread {...} que copia el existente sin modificar el original.
     if (enemigoActual === null) {
         if (sala === "castillo_este2_monstruo") {
             enemigoActual = { ...listaEnemigos[0] }; 
@@ -616,27 +710,33 @@ function ataque() {
             enemigoActual = { ...listaEnemigos[2] };
         }
     }
-
+    //También puede ser que la sala no tenga enemigos, por lo tanto se manda un mensaje por el cuadro del juego.
     if (enemigoActual === null) {
         recuadroTexto(`<p>Aquí no hay enemigos.</p>`);
         return;
     }
-
+    //variables para sumar item + bonus y así en la pelea se tiene en cuenta este total.
     let miFuerzaTotal = heroe.strength + heroe.strengthBonus;
     let miDefensaTotal = heroe.defense + heroe.defenseBonus;
-    
+    //1 garantiza que el daño mínimo sea 1. Se hace fuerza total menos la defensa del enemigo.
     let dañoEnemigo = Math.max(1, miFuerzaTotal - enemigoActual.defence);
+    //se resta a la vida del enemigo.
     enemigoActual.health -= dañoEnemigo;
-    
+    //se guarda el estado del enemigo y aunque se reinicie la pelea se podrá continuar desde ese punto.
     localStorage.setItem("enemigoEnCombate", JSON.stringify(enemigoActual));
     
     recuadroTexto(`<p>Has atacado a ${enemigoActual.name} y le has hecho ${dañoEnemigo} de daño.</p>`);
-
+    //si la vida del enemigo es menor o igual que 0 significa que el heroe ha ganado. El enemigo se elimina.
     if (enemigoActual.health <= 0) {
         recuadroTexto(`<p>¡Has derrotado a ${enemigoActual.name}!</p>`);
         enemigoActual = null;
         localStorage.removeItem("enemigoEnCombate"); 
-
+        /*Introduje esta función porque quería que, una vez muerto el enemigo se cargase automáticamente la sala sin
+        enemigo. Por ejemplo, en la del boss final introduje en el css además del enemigo, humo. Pero, al morir el enemigo,
+        tanto éste como el humo se borran, mostrandose la sala sin enemigo. Así da mas credibilidad al juego.
+        Introduje dos segundos de tiempo para que la persona que jugase leyese en el recuadro el mensaje de que ganó la pelea
+        antes de que se reiniciase.
+        */
         setTimeout(function() {
             
             if (sala === "castillo_boss") {
@@ -651,27 +751,26 @@ function ataque() {
                 localStorage.setItem("salaActual", "castillo_este"); 
                 window.location.href = "../castillo_este/castillo_esteKAEL.html";
             }
-        }, 1500);
+        }, 2000);
         return;
     }
-
+    //misma manera que con enemigo.
     let dañoHeroe = Math.max(1, enemigoActual.strength - miDefensaTotal);
     heroe.health -= dañoHeroe;
 
     if (heroe.health <= 0) {
         recuadroTexto(`<p>${enemigoActual.name} te ha matado.</p>`);
         heroe.health = 10;
-        
+        //si muere el heroe te redirige a la zona de entrada al mundo. Te carga el personaje con 10 de vida. Lo implementé porque daba realismo.
         localStorage.setItem("salaActual", "entrada_mundo");
         localStorage.removeItem("enemigoEnCombate");
         guardarPartida(heroe);
         
         setTimeout(function() {
             window.location.href = "../entrada_mundo/entrada_KAEL.html";
-        }, 1500);
+        }, 2000);
         return;
     }
-
     guardarPartida(heroe);
     muestraHeroe();
     recuadroTexto(`<p>${enemigoActual.name} te ataca y te hace ${dañoHeroe} de daño.</p>`);
@@ -685,16 +784,26 @@ if (pelea) {
     });
 }
 
+/*
+Me pareció interesante implementar un botón que te permitiese resetear el personaje al punto inicial.
+Cuando quería testear el juego este botón me parecía bastante útil. A veces en el localStorage quedan
+almacenados fallos que hacen que el resto de cosas que implementas parezca que no funcionen. Normalmente iba a
+consola y escribía localStorage.clear pero con este botón se hace mucho más rápido.
+Además, sobre todo cara a la jugabilidad es útil si quieres volver a tener los datos por defecto.
+*/
+
 function resetearPersonaje(){
  localStorage.removeItem("datosKael");
     localStorage.removeItem("enemigoEnCombate");
     
     let heroeNuevo = defaultGameState.player[1]; 
     localStorage.setItem("datosKael", JSON.stringify(heroeNuevo));
+    //al contrario que la función muestraHeroe. 
     localStorage.setItem("verHeroe", "false"); 
     localStorage.setItem("salaActual", "entrada_mundo");
 
     recuadroTexto(`<p>Has reseteado correctamente tu personaje</p>`);
+    //Te redirige al punto inicial.
     window.location.href = "../entrada_mundo/entrada_KAEL.html";
 }
 let resetear = document.getElementById("reseteo");
@@ -705,6 +814,7 @@ if(resetear){
     });
 }
 
+//Fue necesario implementar esto debido a que el botón de la carta del jugador se cerraba cada vez que cambiaba de sala.
 document.addEventListener("DOMContentLoaded", function() {
     let visible = localStorage.getItem("verHeroe");
     

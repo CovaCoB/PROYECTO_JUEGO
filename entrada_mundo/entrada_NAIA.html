@@ -9,7 +9,7 @@
 </head>
 <body>
       <div class="contenedor_entrada">
-         <div class="cuadro_narrativa" id="cuadro_narrativa">
+         <div class="cuadro_narrativa" id="cuadro_narrativa"><!--En todos los HTML se llama a la función que genera interacción el el cuadro.-->
                 <p>
                     Bienvenida a AELORIA, un mundo donde la magia y los secretos antiguos esperan a los más valientes. <br>
                     Pulsa la flecha derecha para ir a "El taller del anciano", el lugar donde forjar tus armas y adquirir pociones.<br>
@@ -22,11 +22,13 @@
         <div class="imagen_fondo"></div>
         <div class="imagen_carta"></div> 
         <div class="texto_carta">
+            <!--Se muestra al heroe mediante la función. Se pone dentro del texto de la carta para que se genere en el lugar correcto.-->
             <div id="heroe">
             <button onclick="muestraHeroe()">Muestra héroe</button></div>
         </div>
         <div class="botones">
             <div class="area_control">
+                <!--Se pone la ruta de las imágenes de las flechas que servirán para moverse por el mapa.-->
         <button id="dir_norte"><img src="../Imagenes/flecha_norte.png" alt="flecha_norte"></button>
         <button id="dir_sur"><img src="../Imagenes/flecha_sur.png" alt="flecha_sur"></button>
         <button id="dir_este"><img src="../Imagenes/flecha_este.png" alt="flecha_este"></button>
@@ -35,6 +37,7 @@
         </div> 
         <div class="seccion-info">
             <div class="contenedor-botones-info">
+                <!--Botones cuya funcionalidad está definida en el js. Se hacen con onclick y se ponen los id debajo que responden a esas funciones.-->
                 <button onclick="muestraSala()">Muestra sala</button>
                 <button onclick="muestraEnemigo()">Muestra enemigo</button>
                 <button onclick="cerrarInfo()">X</button>
@@ -68,6 +71,7 @@
             <button onclick="cerrarInfo()">X</button>
         </div>
     </div>
+    <!--Se pone abajo del todo para asegurar que cargue todo el contenido y no hayan fallos.-->
     <script src="../defaultGameStateNaia.js"></script>
 </body>
 </html>

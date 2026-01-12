@@ -1,18 +1,18 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: border-box;/*Este se puso para que el padding no afectase el ancho total.*/
     }
 
 body, html {
     height: 100%;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
+    font-family: 'Georgia', serif;
+    overflow: hidden;/*Para evitar el scroll en la página.*/
 }
 .contenedor_entrada {
     position:relative;
     display:grid;
-    grid-template-columns: 80% 20%;
+    grid-template-columns: 80% 20%; /*El 80 para la zona del juego y el 20 para la zona de la carta.*/
     width: 100%;
     height: 100vh;
 }
@@ -24,9 +24,9 @@ body, html {
     width: 80%;    
     max-height: 150px; 
     overflow-y: auto;
-    background: rgba(0, 0, 0, 0.6); 
-    border: 2px solid hsl(280, 75%, 76%); 
-    z-index: 100; 
+    background: rgba(0, 0, 0, 0.6); /*Semitransparente para que se lea el texto y se vea algo el fondo de la imagen.*/
+    border: 2px solid hsl(280, 75%, 76%); /*Colores del personaje femenino, todas las cajas de información seguirán este estilo.*/
+    z-index: 100; /*Capa por encima para que se vea.*/
     padding-top:8px;
 }
 .cuadro_narrativa p {
@@ -36,12 +36,13 @@ body, html {
     color: white;
     padding: 5px;
 }
+/*Estilos para los botones de la tienda/forja*/
 
 .botones_forja {
-    position: absolute;       
+    position: absolute;       /*Para tener precisión al colocarlos.*/
     top: 170px;                 
     left: 50%;                   
-    transform: translateX(-50%); 
+    transform: translateX(-50%); /*Precisión en el eje horizontal*/
     width: 80%;                 
     z-index: 200;                
     display: flex;
@@ -50,8 +51,8 @@ body, html {
 }
 
 .botones_forja button {
-    background: hsl(202, 75%, 76%);
-    color: #2e1a05;
+    background: hsl(202, 75%, 76%); /*Estilo azul del personaje femenino.*/
+    color: #2e1a05;/*colores tierra, naturaleza...*/
     border: none;
     padding: 6px 12px;
     cursor: pointer;
@@ -77,7 +78,7 @@ body, html {
     top: 55%;        
     height: auto;         
     max-height: 450px;    
-    overflow-y: auto;      
+    overflow-y: auto;      /*Poder hacer scroll*/
     background: rgba(45, 25, 5, 1); 
     border: 2px solid hsl(280, 75%, 76%); 
     border-radius: 8px;
@@ -94,7 +95,7 @@ body, html {
 }
 
 #heroe {
-    display: block;        
+    display: block;        /*Para ocupar todo el ancho de la carta disponible*/
     width: 100%;        
     padding: 10px;
     text-align: center;
@@ -136,7 +137,7 @@ body, html {
     border-radius: 10px;
     width: auto;         
     display: flex;         
-    flex-direction: column; 
+    flex-direction: column; /*Un botón al lado del otro.*/
     
 }
 
@@ -197,7 +198,7 @@ body, html {
     border: 2px solid hsl(280, 75%, 76%);
     border-radius: 10px;
     width: 200px;       
-    display: flex;         
+    display: flex;         /*Boton al lado del otro dejandose espacio entre ellos.*/
     justify-content: space-between;
 }
 .seccion-info2 button {
@@ -212,7 +213,6 @@ body, html {
     transition: 0.3s;
 }
 
-
 button {
     height: 30px;
 }
@@ -220,9 +220,8 @@ button {
 
 .seccion-info2 button:hover {
     background: white;
-    transform: scale(1.05);
+    transform: scale(1.05); /*Para que el botón sea más grande al pasar el ratón.*/
 }
-
 
 .menu, .menu2 {
     position: relative; 
@@ -239,7 +238,7 @@ button {
     padding: 5px;
     flex-direction: column;   
     gap: 4px;
-    z-index: 3000;
+    z-index: 3000;/*Cada vez tuve que ir poniendole más tamaño para que se viesen los elementos.*/
     min-width: 110px;          
     margin-bottom: 5px;        
 }
@@ -300,7 +299,7 @@ button {
     padding: 5px 10px;
     cursor: pointer;
     font-weight: bold;
-    border-radius: 3px;
+    border-radius: 3px; /*más redondo*/
 }
 
 .fondo_carta {
@@ -334,14 +333,14 @@ button {
     height: 100%;
     width: 80%;
     z-index: 200;
-    pointer-events: none;
+    pointer-events: none; /*Para que no ocupen toda la pantalla y se pueda interactuar con ellos, después puse auto para activarlos individualmente.*/
 }
 
 .botones button {
     background-color: transparent;
     border: none;
     cursor: pointer;
-    pointer-events: auto;
+    pointer-events: auto; /*activar los botones*/
     position: relative !important;
     top: auto !important;
     left: auto !important;
@@ -363,7 +362,7 @@ button {
     bottom:150px;
     right: 40px;    
     display: grid;
-    grid-template-areas: 
+    grid-template-areas: /*Tabla de 3x3 con filas y columnas. Hay celdas con puntos para rellenarlas. Es para crear la cuadrícula de las flechas del mapa.*/
         ".     norte ."
         "oeste .     este"
         ".     sur   .";
