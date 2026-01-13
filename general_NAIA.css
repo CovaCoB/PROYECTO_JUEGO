@@ -36,7 +36,6 @@ body, html {
     color: white;
     padding: 5px;
 }
-/*Estilos para los botones de la tienda/forja*/
 
 .botones_forja {
     position: absolute;       /*Para tener precisión al colocarlos.*/
@@ -379,9 +378,8 @@ button {
 /*Creación de CSS para móvil.
 Mi diseño anterior está pensado para ordenador y siempre aprovecho el ancho añadiendo elementos.
 Para el formato móvil tuve que eliminar la foto de la carta y dejar solo el botón.
-Muchas imágenes de fondo las tenía con 100vh, haciendo que se estirase y cubrir toda la pantalla. 
+Muchas imágenes de fondo las tenía con 100vh, haciendo que se estirase y cubriese toda la pantalla. 
 Con móvil las imagenes tienen unos píxeles fijos que comparte con botones y demás elementos.
-@media sirve de traductor de mi css de ordenador a móvil.
 */
 
 
@@ -393,17 +391,17 @@ Con móvil las imagenes tienen unos píxeles fijos que comparte con botones y de
     }
 
     .contenedor_entrada {
-    display: flex;
-    flex-direction: column;
-    height: auto !important;
-    min-height: 100vh !important; 
-    width: 100%;
-    position: relative;
-    /*para que se rellene la parte de abajo con el fondo y no se vea blanco.*/
-    padding-bottom: 100px !important; 
-    background-attachment: scroll; 
-    background-size: cover;
-}
+        display: flex;
+        flex-direction: column;
+        height: auto !important;
+        min-height: 100vh !important; 
+        width: 100%;
+        position: relative;
+        /*para que se rellene la parte de abajo con el fondo y no se vea blanco.*/
+        padding-bottom: 100px !important; 
+        background-attachment: scroll; 
+        background-size: cover;
+    }
 
     .cuadro_narrativa {
         position: relative;
@@ -543,7 +541,7 @@ Con móvil las imagenes tienen unos píxeles fijos que comparte con botones y de
     }
 
     .botones_forja {
-        /*Con wrap si los botones no caben se ponen uno debajo de otro.*/
+        /*pongo los botones uno debajo del otro con wrap.*/
         position: relative;
         top: 0 !important;  
         left: 0 !important;
@@ -692,7 +690,7 @@ Con móvil las imagenes tienen unos píxeles fijos que comparte con botones y de
 
     body .humo, 
     body .humo2 {
-        /* tuve que forzar con body para que respondiese porque el tamaño del humo conversaba valores de escritorio aunque lo cambiase. */
+        /* tuve que forzar con body para que respondiese porque el tamaño del humo conservaba valores de escritorio aunque lo cambiase. */
         width: 450px !important; 
         height: 250px !important; 
         margin: 0 !important;
@@ -758,7 +756,7 @@ Con móvil las imagenes tienen unos píxeles fijos que comparte con botones y de
 }
 
 .monstruo2 {
-    /* para que no empuje el diseño y esté sobre el elemento padre. */
+    /* absolute para que no empuje el diseño y esté sobre el elemento padre. */
     position: absolute !important;
     z-index: 30 !important;
     height: 150px !important; 

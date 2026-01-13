@@ -1,5 +1,5 @@
 /*se crea el objeto literal con sus dos propiedades.
-Como diseñé los monstruos creando un nuevo html con la foto de ellos, algunas direcciones son arrays de los dos html. 
+Como diseñé las salas de monstruos creando un nuevo html con la foto de ellos, algunas direcciones son arrays de los dos html. 
 */
 const defaultGameState ={
 player: {
@@ -414,7 +414,7 @@ El botón del html tiene un id heroe. Uso la función cargarPartida();
 Nuavemente, guardo la sala actual guardada en el localStorage. Si no existe, posición inicial.
 Se comprueba que aparezca su nombre en el array y se muestra su id. Esto es necesario para que la carta del heroe
 vaya actualizando el id de la sala según va avanzando.
-Creo dos variables que sumen la fuerza con su bonus al igual que con fuerza y así mostrarlo en la carta.
+Creo dos variables que sumen la defensa con su bonus al igual que con fuerza y así mostrarlo en la carta.
 */
 function muestraHeroe(){
     localStorage.setItem("verHeroe", "true");
@@ -466,8 +466,7 @@ function muestraSala(){
     if (cajaEnemigo) {
         cajaEnemigo.innerHTML = "";
     }
-    /*Genero de manera aleatoria una sala que guardo en una variable y que usaré para acceder a los datos de la sala
-    adaptados a la sala que salió de aleatorio. 
+    /*Genero una sala aleatoria, la guardo en una variable y la uso como llave para acceder a sus datos específicos.
     Genero la imagen con html.
     */
     let mostrar = document.getElementById("datos-sala");
@@ -513,8 +512,8 @@ function muestraEnemigo(){
     `;
 }
 /*
-Tanto para interaccion como gestion planteé la misma funcion: necesitaba dos botones que hiciesen de menu
-que al hacerle click fuese un desplegable de mas botones pero que se pudiesen ocultar para que no fuese incómodo para
+Tanto para interaccion como gestion planteé la misma funcion: necesitaba dos botones que hiciesen de menu y, al 
+hacerle click fuese un desplegable de mas botones pero que se pudiesen ocultar para que no fuese incómodo para
 el usuario que juega. Para ello, se alterna eliminar con monstrar. Con remove oculto el menu y con toggle lo abro y cierro
 alternando estos dos botones.
 */
@@ -532,7 +531,7 @@ function gestion(){
 }
 
 /*
-Misma manera de proceder que antes para donde esta el personaje y se mueva por el mapa.
+Misma manera de proceder que antes para saber donde esta el personaje y se mueva por el mapa.
 Cargo el personaje con sus datos.
 Si la zona en la que está es >0 en probabilidad de que salga un monstruo, entonces aparece oro.
 Aquí también le apliqué un random para que no encontrase siempre oro aunque sea una sala con monstruo, para que fuese
@@ -730,7 +729,7 @@ function ataque() {
     let heroe = cargarPartida();
     let sala = localStorage.getItem("salaActual");
     let listaEnemigos = defaultGameState.map.enemies;
-    //Se mira si hay enemigos guardados. Se convierte el string JSON a formato javascript y se asigna a enemigoActual.
+    //Se mira si hay enemigos guardados. Se convierte el string json a formato javascript y se asigna a enemigoActual.
     if (enemigoActual === null) {
         let enemigoGuardado = localStorage.getItem("enemigoEnCombate");
         if (enemigoGuardado) {
@@ -755,7 +754,7 @@ function ataque() {
     //variables para sumar item + bonus y así en la pelea se tiene en cuenta este total.
     let miFuerzaTotal = heroe.strength + heroe.strengthBonus;
     let miDefensaTotal = heroe.defense + heroe.defenseBonus;
-    //1 garantiza que el daño mínimo sea 1. Se hace fuerza total menos la defensa del enemigo.
+    //el 1 garantiza que el daño mínimo sea 1. Se hace fuerza total menos la defensa del enemigo.
     let dañoEnemigo = Math.max(1, miFuerzaTotal - enemigoActual.defence);
     //se resta a la vida del enemigo.
     enemigoActual.health -= dañoEnemigo;
@@ -778,10 +777,10 @@ function ataque() {
         enemigoActual = null;
         localStorage.removeItem("enemigoEnCombate"); 
         /*Introduje esta función porque quería que, una vez muerto el enemigo se cargase automáticamente la sala sin
-        enemigo. Por ejemplo, en la del boss final introduje en el css además del enemigo, humo. Pero, al morir el enemigo,
-        tanto éste como el humo se borran, mostrandose la sala sin enemigo. Así da mas credibilidad al juego.
+        enemigo. Por ejemplo, en la del boss final introduje en el css al enemigo y humo. Pero, al morir el enemigo,
+        tanto éste como el humo se borran, mostrandose la sala vacía. Así da mas credibilidad al juego.
         Introduje cuatro segundos de tiempo para que la persona que jugase leyese en el recuadro el mensaje de que ganó la pelea
-        antes de que se reiniciase.
+         y de que obtuvo bonus de fuerza antes de que se reiniciase
         */
         setTimeout(function() {
             
@@ -830,13 +829,6 @@ if (pelea) {
     });
 }
 
-/*
-Me pareció interesante implementar un botón que te permitiese resetear el personaje al punto inicial.
-Cuando quería testear el juego este botón me parecía bastante útil. A veces en el localStorage quedan
-almacenados fallos que hacen que el resto de cosas que implementas parezca que no funcionen. Normalmente iba a
-consola y escribía localStorage.clear pero con este botón se hace mucho más rápido.
-Además, sobre todo cara a la jugabilidad es útil si quieres volver a tener los datos por defecto.
-*/
 
 function resetearPersonaje(){
  localStorage.removeItem("datosKael");
