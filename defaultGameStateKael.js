@@ -9,7 +9,7 @@ player: {
         strength: 10,
         strengthBonus: 0,
         defense:  8,
-        defenseBonus: 1,
+        defenseBonus: 0,
         currentRoom: 1,
         gold: 120,
         potions: 3
@@ -20,7 +20,7 @@ player: {
         strength: 10,
         strengthBonus: 0,
         defense:  8,
-        defenseBonus: 1,
+        defenseBonus: 0,
         currentRoom: 1,
         gold: 120,
         potions: 3
@@ -232,7 +232,7 @@ map: {
         {
             name: "El coloso",
             isBoss: true,
-            description: "Es el guardián, vive en la parte más profunda del castillo. Es inmenso, su cuerpo esta formado por piedra volcánica, solo acercarte te mataría. Posee un bastón en cuya punta viven las almas de los antiguos héroes",
+            description: "Es el guardián, vive en la parte más profunda del castillo. Es inmenso, su cuerpo esta formado por piedra volcánica, solo acercarte te mataría. Posee una lanza en cuya punta viven las almas de los antiguos héroes",
             health: 100,
             strength: 15,
             defence: 10,
@@ -402,7 +402,8 @@ let guardarProgreso = document.getElementById("guardar");
 if(guardarProgreso){
     guardarProgreso.addEventListener("click", function(e){
         e.preventDefault();
-        cargarPartida();
+        let heroe = cargarPartida();
+        guardarPartida(heroe);
         recuadroTexto(`<p>Has guardado la partida.</p>`);
     });
 }
@@ -569,17 +570,16 @@ if(botonMochila){
 }
 
 /*
-Si el personaje adquiere una poción, diseñé que además le sumase 1 de bonus de defensa. Mi lógica es que si compras pociones
-te ayudarán a poder defenderte con los monstruos al poder recuperarte.
+Función comprar poción que suma pociones y resta 3 de oro.
 */
 function comprarPocion(){
     let heroe = cargarPartida();
     if(heroe.gold >= 3){
         heroe.gold-=3;
         heroe.potions+=1;
-        heroe.defenseBonus +=1;
         guardarPartida(heroe);
-        let texto = `<p>Esta poción te será de gran ayuda en el viaje. Tienes ${heroe.potions} pociones y te quedan ${heroe.gold} monedas</p>`;
+        let texto = `<p>Esta poción te será de gran ayuda en el viaje.<br>
+        Tienes ${heroe.potions} pociones y te quedan ${heroe.gold} monedas.</p>`;
         recuadroTexto(texto);
         muestraHeroe();
     }else {
@@ -595,15 +595,22 @@ pocion.addEventListener("click", function(e){
     comprarPocion();
 });
 
-//reparar arma tambien te suma en fuerza. Es una función que añadí por seguir la lógica de mi diseño.
+/*reparar arma tambien te suma en fuerza. Es una función que añadí por seguir la lógica de mi diseño.
+Le he puesto un limite al bonus, porque sino el heroe podría tener fuerza infinita.
+*/
 }
 function repararArma(){
     let heroe = cargarPartida();
+    let bonus_maximo = 15;
+    if(heroe.strengthBonus >= bonus_maximo){
+        recuadroTexto(`<p>Tu lanza es suficientemente poderosa</p>`);
+        return;
+    }
     if(heroe.gold >=5){
         heroe.gold-=5;
         heroe.strengthBonus+= 2;
         guardarPartida(heroe);
-        let texto = `<p>He arreglado tu arco, has sumado dos puntos de defensa, ahora tienes ${heroe.defense} puntos.</p>`;
+        let texto = `<p>He arreglado tu lanza, has sumado dos puntos de fuerza, ahora tienes ${heroe.strength + heroe.strengthBonus} puntos.</p>`;
         recuadroTexto(texto);
         muestraHeroe();
     }else {
@@ -618,6 +625,7 @@ arma.addEventListener("click", function(e){
     repararArma();
 });
 }
+
 //si no tiene pociones le sale un aviso en el recuadro de juego.
 function verPociones(){
     let heroe = cargarPartida();
@@ -638,8 +646,37 @@ if(pociones){
     });
 }
 
-//texto para el botón de ayuda del juego.
 
+function sumarDefensa(){
+    let heroe = cargarPartida();
+    //Se ponen limites como el bonus de fuerza.
+    if(heroe.defenseBonus >= 10){
+        recuadroTexto(`<p>Tu defensa ya está al máximo nivel posible.</p>`);
+        return;
+    }
+
+    // Se comprueba si tiene pociones.
+    if (heroe.potions > 0){
+        heroe.potions--;
+        heroe.defenseBonus += 5;
+        heroe.isBuffed = true;
+        
+        guardarPartida(heroe);
+        recuadroTexto(`<p>Te sientes más fuerte. (Defensa +5 para el próximo combate).</p>`);
+        muestraHeroe();
+    } else {
+        recuadroTexto(`<p>No te quedan pociones de defensa.</p>`);
+    }
+}
+let masDefensa = document.getElementById("pocionDefensa");
+if(masDefensa){
+    masDefensa.addEventListener("click", function(e){
+        e.preventDefault();
+        sumarDefensa();
+    });
+}
+
+//texto para el botón de ayuda del juego.
 function cuadroAyuda(){
     let texto = `
         <p>Haz click en las flechas para moverte por el mapa.</p>
@@ -729,12 +766,21 @@ function ataque() {
     //si la vida del enemigo es menor o igual que 0 significa que el heroe ha ganado. El enemigo se elimina.
     if (enemigoActual.health <= 0) {
         recuadroTexto(`<p>¡Has derrotado a ${enemigoActual.name}!</p>`);
+        heroe.strengthBonus += 2;
+        recuadroTexto(`<p>¡Has encontrado una lanza mejor entre los restos de ${enemigoActual.name}! (+2 Fuerza)</p>`);
+        //se elimina el efecto de la defensa.
+        if(heroe.isBuffed){
+            heroe.defenseBonus -= 5; 
+            heroe.isBuffed = false;
+            guardarPartida(heroe);
+            recuadroTexto(`<p>El efecto de la poción se ha desvanecido.</p>`);
+        }
         enemigoActual = null;
         localStorage.removeItem("enemigoEnCombate"); 
         /*Introduje esta función porque quería que, una vez muerto el enemigo se cargase automáticamente la sala sin
         enemigo. Por ejemplo, en la del boss final introduje en el css además del enemigo, humo. Pero, al morir el enemigo,
         tanto éste como el humo se borran, mostrandose la sala sin enemigo. Así da mas credibilidad al juego.
-        Introduje dos segundos de tiempo para que la persona que jugase leyese en el recuadro el mensaje de que ganó la pelea
+        Introduje cuatro segundos de tiempo para que la persona que jugase leyese en el recuadro el mensaje de que ganó la pelea
         antes de que se reiniciase.
         */
         setTimeout(function() {
@@ -751,7 +797,7 @@ function ataque() {
                 localStorage.setItem("salaActual", "castillo_este"); 
                 window.location.href = "../castillo_este/castillo_esteKAEL.html";
             }
-        }, 2000);
+        }, 4000);
         return;
     }
     //misma manera que con enemigo.

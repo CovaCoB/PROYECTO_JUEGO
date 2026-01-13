@@ -6,8 +6,8 @@ player: {
         health: 100,
         strength: 10,
         strengthBonus: 0,
-        defense:  5,
-        defenseBonus: 1,
+        defense:  8,
+        defenseBonus: 0,
         currentRoom: 1,
         gold: 120,
         potions: 3
@@ -17,8 +17,8 @@ player: {
         health: 100,
         strength: 10,
         strengthBonus: 0,
-        defense:  5,
-        defenseBonus: 1,
+        defense:  8,
+        defenseBonus: 0,
         currentRoom: 1,
         gold: 120,
         potions: 3
@@ -230,7 +230,7 @@ map: {
         {
             name: "El coloso",
             isBoss: true,
-            description: "Es el guardián, vive en la parte más profunda del castillo. Es inmenso, su cuerpo esta formado por piedra volcánica, solo acercarte te mataría. Posee un bastón en cuya punta viven las almas de los antiguos héroes",
+            description: "Es el guardián, vive en la parte más profunda del castillo. Es inmenso, su cuerpo esta formado por piedra volcánica, solo acercarte te mataría. Posee una lanza en cuya punta viven las almas de los antiguos héroes",
             health: 100,
             strength: 15,
             defence: 10,
@@ -299,13 +299,12 @@ function mover(direccion) {
     }
 }
 
-//Asignamos al id del html el evento click que redirige a la ruta norte con la funcion.
+
 document.getElementById("dir_norte").addEventListener("click", ()=>mover("north"));
 document.getElementById("dir_sur").addEventListener("click", ()=>mover("south"));
 document.getElementById("dir_este").addEventListener("click", ()=>mover("east"));
 document.getElementById("dir_oeste").addEventListener("click", ()=>mover("west"));
 
-//añadir al recuadro de información texto y que exista scroll
 
 function recuadroTexto(texto){
     const informacion = document.getElementById("cuadro_narrativa");
@@ -476,7 +475,8 @@ let guardarProgreso = document.getElementById("guardar");
 if(guardarProgreso){
     guardarProgreso.addEventListener("click", function(e){
         e.preventDefault();
-        cargarPartida();
+        let heroe = cargarPartida();
+        guardarPartida(heroe);
         recuadroTexto(`<p>Has guardado la partida.</p>`);
     });
 }
@@ -516,16 +516,15 @@ function comprarPocion(){
     if(heroe.gold >= 3){
         heroe.gold-=3;
         heroe.potions+=1;
-        heroe.defenseBonus +=1;
         guardarPartida(heroe);
-        let texto = `<p>Esta poción te será de gran ayuda en el viaje. Tienes ${heroe.potions} pociones y te quedan ${heroe.gold} monedas</p>`;
+        let texto = `<p>Esta poción te será de gran ayuda en el viaje.<br>
+        Tienes ${heroe.potions} pociones y te quedan ${heroe.gold} monedas.</p>`;
         recuadroTexto(texto);
         muestraHeroe();
     }else {
         recuadroTexto(`<p>No tienes suficiente oro para comprar la poción, quizás encuentres algo en la mochila</p>`);
         muestraHeroe();
     }
-
 }
 let pocion = document.getElementById("comprar");
 if(pocion){
@@ -536,11 +535,16 @@ pocion.addEventListener("click", function(e){
 }
 function repararArma(){
     let heroe = cargarPartida();
+    let bonus_maximo = 15;
+    if(heroe.strengthBonus >= bonus_maximo){
+        recuadroTexto(`<p>Tu arco es suficientemente poderoso</p>`);
+        return;
+    }
     if(heroe.gold >=5){
         heroe.gold-=5;
         heroe.strengthBonus+= 2;
         guardarPartida(heroe);
-        let texto = `<p>He arreglado tu arco, has sumado dos puntos de defensa, ahora tienes ${heroe.defense} puntos.</p>`;
+        let texto = `<p>He arreglado tu arco, has sumado dos puntos de fuerza, ahora tienes ${heroe.strength + heroe.strengthBonus} puntos.</p>`;
         recuadroTexto(texto);
         muestraHeroe();
     }else {
@@ -594,6 +598,34 @@ if (botonAyuda) {
     });
 }
 
+function sumarDefensa(){
+    let heroe = cargarPartida();
+    
+    if(heroe.defenseBonus >= 10){
+        recuadroTexto(`<p>Tu defensa ya está al máximo nivel posible.</p>`);
+        return;
+    }
+
+    if (heroe.potions > 0){
+        heroe.potions--;
+        heroe.defenseBonus += 5;
+        heroe.isBuffed = true;
+        
+        guardarPartida(heroe);
+        recuadroTexto(`<p>Te sientes más fuerte. (Defensa +5 para el próximo combate).</p>`);
+        muestraHeroe();
+    } else {
+        recuadroTexto(`<p>No te quedan pociones de defensa.</p>`);
+    }
+}
+let masDefensa = document.getElementById("pocionDefensa");
+if(masDefensa){
+    masDefensa.addEventListener("click", function(e){
+        e.preventDefault();
+        sumarDefensa();
+    });
+}
+
 function recuperarVida(){
     let heroe = cargarPartida();
     if(heroe.potions>0){
@@ -629,7 +661,6 @@ function ataque() {
             enemigoActual = JSON.parse(enemigoGuardado);
         }
     }
-
     if (enemigoActual === null) {
         if (sala === "castillo_este2_monstruo") {
             enemigoActual = { ...listaEnemigos[0] }; 
@@ -639,7 +670,6 @@ function ataque() {
             enemigoActual = { ...listaEnemigos[2] };
         }
     }
-
     if (enemigoActual === null) {
         recuadroTexto(`<p>Aquí no hay enemigos.</p>`);
         return;
@@ -657,6 +687,14 @@ function ataque() {
 
     if (enemigoActual.health <= 0) {
         recuadroTexto(`<p>¡Has derrotado a ${enemigoActual.name}!</p>`);
+        heroe.strengthBonus += 2;
+        recuadroTexto(`<p>¡Has encontrado un arco mejor entre los restos de ${enemigoActual.name}! (+2 Fuerza)</p>`);
+        if(heroe.isBuffed){
+            heroe.defenseBonus -= 5; 
+            heroe.isBuffed = false;
+            guardarPartida(heroe);
+            recuadroTexto(`<p>El efecto de la poción se ha desvanecido.</p>`);
+        }
         enemigoActual = null;
         localStorage.removeItem("enemigoEnCombate"); 
 
@@ -674,7 +712,7 @@ function ataque() {
                 localStorage.setItem("salaActual", "castillo_este"); 
                 window.location.href = "../castillo_este/castillo_esteNAIA.html";
             }
-        }, 2000);
+        }, 4000);
         return;
     }
 
@@ -712,7 +750,7 @@ function resetearPersonaje(){
  localStorage.removeItem("datosNaia");
     localStorage.removeItem("enemigoEnCombate");
     
-    let heroeNuevo = defaultGameState.player[2]; // Volvemos a Naia inicial
+    let heroeNuevo = defaultGameState.player[2]; // Naia inicial
     localStorage.setItem("datosNaia", JSON.stringify(heroeNuevo));
     localStorage.setItem("verHeroe", "false"); 
     localStorage.setItem("salaActual", "entrada_mundo");

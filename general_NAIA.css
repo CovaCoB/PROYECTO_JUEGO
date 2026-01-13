@@ -375,3 +375,443 @@ button {
 #dir_sur   { grid-area: sur; }
 #dir_este  { grid-area: este; }
 #dir_oeste { grid-area: oeste; }
+
+/*Creación de CSS para móvil.
+Mi diseño anterior está pensado para ordenador y siempre aprovecho el ancho añadiendo elementos.
+Para el formato móvil tuve que eliminar la foto de la carta y dejar solo el botón.
+Muchas imágenes de fondo las tenía con 100vh, haciendo que se estirase y cubrir toda la pantalla. 
+Con móvil las imagenes tienen unos píxeles fijos que comparte con botones y demás elementos.
+@media sirve de traductor de mi css de ordenador a móvil.
+*/
+
+
+@media screen and (max-width: 768px) {
+
+    body, html {
+        overflow-y: auto !important; /* Aquí estoy permitiendo hacer scroll verticalmente. */
+        height: auto !important;
+    }
+
+    .contenedor_entrada {
+    display: flex;
+    flex-direction: column;
+    height: auto !important;
+    min-height: 100vh !important; 
+    width: 100%;
+    position: relative;
+    /*para que se rellene la parte de abajo con el fondo y no se vea blanco.*/
+    padding-bottom: 100px !important; 
+    background-attachment: scroll; 
+    background-size: cover;
+}
+
+    .cuadro_narrativa {
+        position: relative;
+        top: 0;
+        left: 0;
+        transform: none;
+        width: 100%;
+        margin: 15px auto;
+        max-height: none;
+        height: auto;
+        border-radius: 8px; 
+        order: 1; /* Se utiliza para marcar el primer elemento visible. */
+        
+    }
+    .imagen_fondo {
+        width: 100%;
+        height: 250px; /* Controlo la altura adaptada a dispositivo móvil. */
+        background-position: center;
+        background-size: cover;
+        flex-shrink: 0;
+        order: 2; 
+    }
+    .texto_carta {
+        position: relative;
+        top: auto;
+        transform: none;
+        width: 100%;
+        margin: 10px auto;
+        height: auto;
+        max-height: none;
+        background: rgba(45, 25, 5, 0.95);
+        z-index: 10;
+        order: 4; /* cuarto elemento, uno debajo del otro.*/
+        transform: translate(0%, 80%); 
+    }
+
+    /* Posición fija para que no se pierda haciendo scroll. */
+    .botones {
+        position: relative !important; 
+        height: auto !important;
+        min-height: 0 !important;
+        width: 100% !important;
+        margin-top: 20px;
+        padding-bottom: 50px; 
+        display: block !important;
+    }
+
+  .area_control {
+        position: relative; 
+        bottom: 20px;
+        right: 20px;
+        pointer-events: auto;
+        /* Modifico la posición y el tamaño de las flechas.*/
+        transform: translate(10%, -275%) scale(0.5); 
+        padding: 5px;
+        gap: 2px; /* Junto más las flechas */
+        position: fixed;
+    }
+
+    /* Fuerzo más pequeño el tamaño de las flechas.*/
+    .area_control button img {
+        width: 40px !important; 
+        height: auto;
+    }
+    
+    /* reduzco el espacio entre las celdas de la cuadrícula */
+    .area_control {
+        gap: 2px !important;
+    }
+
+    /* organizo con flex wrap para que no se superpongan los botones. */
+    .seccion-info {
+        position: relative;
+        bottom: auto;
+        right: auto;
+        width: 100%;
+        margin: 10px auto;
+        flex-wrap: wrap;
+        justify-content: center;
+        background: rgba(45, 25, 5, 1);
+        z-index: 2000;
+        transform: translate(0%, 70%); 
+        order: 5;
+        
+    }
+
+    .seccion-info2 {
+        position: relative;
+        right: auto;
+        width: 100%;
+        margin: 10px auto; 
+        justify-content: space-around;
+        background: rgba(45, 25, 5, 1);
+        z-index: 2000;
+        order: 6;
+        transform: translate(0%, 90%); 
+    }
+    
+    .acciones, .opciones_ocultas {
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 160px;
+    }
+
+    .acciones button, .opciones_ocultas button {
+        padding: 12px 10px; /* ajusto la altura de los botones. */
+        font-size: 14px;
+    }
+    .contenedor-botones-info {
+    display: flex;
+    justify-content: space-around;    
+        
+}
+.forja_imagen {
+        position: relative; /* es el padre de la imagen del anciano. */
+        width: 100%;
+        height: 300px;     
+        margin: 0;          
+        overflow: hidden;   /* Si la imagen es muy alta se corta. */
+        display: block;
+        order: 2;           /* posicion 2 porque va despues del cuadro narrativa.*/
+    }
+
+    .anciano {
+        /*Tuve que añadir important para que ganase sobre el resto de ordenes anteriores.*/
+        position: absolute !important; /*hijo del elemento padre forja*/
+        bottom: 0 !important;
+        left: 50% !important;
+        transform: translate(-100%, -90%) scale(0.9); 
+        width: 200px; 
+        height: 250px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: bottom center;
+        z-index: 10;
+    }
+
+    .botones_forja {
+        /*Con wrap si los botones no caben se ponen uno debajo de otro.*/
+        position: relative;
+        top: 0 !important;  
+        left: 0 !important;
+        transform: translate(0%, -400%);
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 10px;
+        padding: 15px 0;
+        margin: 0 auto;
+        order: 3;          
+        background: rgba(45, 25, 5, 0.5); /* agrupo todos en un mismo fondo. */
+    }
+
+    .botones_forja button {
+        flex: 0 1 40%;       /* Solo dos botones por fila. */
+        min-width: 120px;
+        height: 45px;       
+    }
+
+    .paisaje_oeste {
+        position: relative; 
+        width: 100%;
+        height: 300px;      
+        margin: 0;
+        display: block;
+        order: 2;           
+        overflow: hidden;
+    }
+
+    .bruja {
+        position: absolute !important;
+        z-index: 99 !important; 
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(10%, -45%) scale(0.5)  !important;
+        height: 260px; 
+        width: 150px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+        pointer-events: none; 
+    }
+    
+    #hablarBruja, #respuesta {
+        position: relative;
+        width: 95%;
+        margin: 10px auto;
+        font-size: 14px;   
+        padding: 12px;     
+        border: 1px solid #a975a7;
+        border-radius: 8px;
+        order: 3;         
+        background: rgba(45, 25, 5, 0.9); 
+    }
+
+    .cuadro_narrativa a {
+        display: inline-block;
+        padding: 8px;
+        margin: 5px;
+    }
+
+    .entrada_castillo {
+        position: relative; 
+        width: 100%;
+        height: 300px;   
+        margin: 0;
+        display: block;
+        order: 2;           
+        overflow: hidden;
+        z-index: 1;        
+     
+    }
+        .castillo {
+        position: relative; 
+        width: 100%;
+        height: 330px; 
+        margin: 0;
+        display: block;
+        order: 2;           
+        overflow: hidden;
+        z-index: 1; 
+    }
+    .castillo_norte {
+     position: relative; 
+        width: 100%;
+        height: 250px;      
+        margin: 0;
+        display: block;
+        order: 2;           
+        overflow: hidden;
+        z-index: 1;       
+        
+}
+.castillo_oeste {
+        position: relative; 
+        width: 100%;
+        height: 280px;      
+        margin: 0;
+        display: block;
+        order: 2;          
+        overflow: hidden;
+        z-index: 1;    
+     
+    }
+    .castillo_oeste2 {
+    position: relative;
+    width: 100%;
+    height: 280px;      
+    display: block;
+    order: 2;          
+    overflow: hidden;
+    z-index: 1;
+    margin-top: -15px !important; 
+    padding: 0;
+}
+    .sala_boss {
+    position: relative;
+    width: 100%;
+    /*cambio de 100vh de escritorio a un tamaño adaptado para móvil */
+    height: 400px !important; 
+    margin-top: -15px !important;
+    display: block;
+    order: 2;
+   overflow: hidden !important;
+    z-index: 1;
+    /* obligo a la imagen a encajar perfectamente en el espacio. */
+    background-size: 100% 100% !important; 
+    background-position: center;
+    background-repeat: no-repeat;
+    
+}
+
+    .monstruo {
+        position: absolute !important;
+        z-index: 10 !important;
+        height: 280px;     
+        width: 250px;
+        top: 55% !important;
+        left: 50% !important;
+        transform: translate(-50%, -60%) scale(0.6) !important;
+        background-size: contain;
+    }
+
+    body .humo, 
+    body .humo2 {
+        /* tuve que forzar con body para que respondiese porque el tamaño del humo conversaba valores de escritorio aunque lo cambiase. */
+        width: 450px !important; 
+        height: 250px !important; 
+        margin: 0 !important;
+        padding: 0 !important;
+        opacity: 0.8;  
+        background-size: contain !important;
+        background-repeat: no-repeat !important;
+        /*fuerzo el posicionamiento.*/
+        position: absolute !important;
+        bottom: 0 !important;
+        top: auto !important;
+        z-index: 10 !important;
+    }
+
+    body .humo {
+    transform: translate(3%, -95%)!important;
+    }
+
+    body .humo2 {
+    transform: translate(-80%, -95%) !important;
+    }
+
+    .sala_NoBoss {
+     position: relative;
+    width: 300%;
+    height: 310px !important; 
+    margin-top: -15px !important; 
+    display: block;
+    order: 2;
+    overflow: hidden;
+    z-index: 1;
+    background-size: 100% 100% !important; 
+    background-position: center;
+    background-repeat: no-repeat;
+    
+}
+.castillo_este {
+    position: relative;
+    width: 100%;
+    height: 250px !important; 
+    margin-top: -15px !important; 
+    display: block;
+    order: 2;
+    overflow: hidden;
+    z-index: 1;
+    background-size: 100% 100% !important; 
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.castilloEspectro {
+    position: relative;
+    width: 100%;
+    height: 280px !important; 
+    margin-top: -15px !important; 
+    display: block;
+    order: 2;
+    overflow: hidden;
+    z-index: 1;
+    background-size: 100% 100% !important; 
+    background-position: center;
+    background-repeat: no-repeat;  
+}
+
+.monstruo2 {
+    /* para que no empuje el diseño y esté sobre el elemento padre. */
+    position: absolute !important;
+    z-index: 30 !important;
+    height: 150px !important; 
+    width: 90px !important;
+    top: 60% !important;
+    left: 35% !important;
+    transform: translate(-50%, -90%) !important;   
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    pointer-events: none;
+}
+
+    .castillo_este2Sin {
+    position: relative;
+    width: 100%;
+    height: 300px !important; 
+    margin-top: -15px !important; 
+    display: block;
+    order: 2;
+    overflow: hidden;
+    z-index: 1;
+    background-size: 100% 100% !important; 
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+    .castillo_este2 {
+    position: relative;
+    width: 100%;
+    height: 300px !important; 
+    margin-top: -15px !important; 
+    display: block;
+    order: 2;
+    overflow: hidden;
+    z-index: 1;
+    background-size: 100% 100% !important; 
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.tigre {
+    position: absolute !important;
+    z-index: 30 !important;
+    height: 160px !important; 
+    width: 100px !important;
+    top: 60% !important;
+    left: 50% !important; 
+    transform: translate(-49%, -89%) !important;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    pointer-events: none;
+}
+
+}

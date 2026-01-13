@@ -45,4 +45,24 @@ a:hover img{
     transform: scale(1.05);
 }
 
+/* Cuando el navegador ve que han cambiando las dimensiones empezará a aplicar estos estilos. */
 
+@media screen and (max-width: 768px) {
+    .cartas {
+        /* Se pone en forma de columna */
+        flex-direction: column; 
+        /* Se tuvo que cambiar el gap anterior porque rompía el diseño. */
+        gap: 30px; 
+        padding: 20px;
+    }
+    .carta img {
+        width: 90%; 
+        max-width: 250px; /*Se marca un maximo para evitar que aumente demasiado. */
+        height: auto;   
+        border-radius: 12%; 
+        margin: 0 auto;
+    }
+    a:hover img {
+        transform: scale(1.02);
+    }
+}
