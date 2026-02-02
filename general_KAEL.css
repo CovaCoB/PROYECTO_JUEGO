@@ -234,7 +234,7 @@ button {
     bottom: 100%;             
     left: 0;
     background: rgba(45, 25, 5, 0.95);
-    border: 1px solid hsl(280, 75%, 76%);
+    border: 1px solid #f0e595;
     border-radius: 5px;
     padding: 5px;
     flex-direction: column;   
@@ -275,7 +275,7 @@ button {
     max-height: 450px;    
     overflow-y: auto;      
     background: rgba(45, 25, 5, 0.85); 
-    border: 2px solid hsl(280, 75%, 76%); 
+    border: 2px solid #f0e595;
     border-radius: 8px;
     z-index: 500;
     
@@ -286,7 +286,7 @@ button {
     margin: 10px 0;      
     font-family: 'Georgia', serif;
     font-size: 16px;
-    color: hsl(188, 64%, 79%);        
+    color: #f0e595;       
     text-align: left;     
     border-bottom: 1px solid rgba(240, 229, 149, 0.2);
     text-align: center;
@@ -294,7 +294,7 @@ button {
 
 
 #sala button {
-    background: hsl(202, 75%, 76%);
+    background: #f0e595;
     color: #2e1a05;
     border: none;
     padding: 5px 10px;
