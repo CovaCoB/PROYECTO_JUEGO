@@ -1,0 +1,71 @@
+body {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;    
+    overflow: hidden;        
+}
+
+/*Se pone en una posición fija que cubra toda la pantalla y se ponga debajo de los elementos para el botón y el sonido*/
+#video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: -1;
+    pointer-events: none;
+}
+/*se dan estilos al botón con una transición grow que crece al pasar el pointer*/
+.btn-aeloria {
+
+  background: linear-gradient(135deg, #3a0ca3, #2ec4b6);
+  color: white;
+  font-size: 18px;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: bold;
+  letter-spacing: 1px;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(46, 196, 182, 0.6);
+}
+/*los colores cambian en el hover*/
+.btn-aeloria:hover {
+  transform: scale(1.05);
+  background: linear-gradient(135deg, #7209b7, #80ed99);
+  box-shadow: 0 0 20px rgba(128, 237, 153, 0.9);
+}
+
+
+.btn-aeloria:active {
+  transform: scale(0.98);
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+/*se dan estilos al icono de sonido de font-awesome*/
+
+.btn-sonido {
+    position: fixed;
+    bottom: 20px;  
+    right: 20px;    
+    background: rgba(0, 0, 0, 0.5); 
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    z-index: 100;  
+    transition: 0.3s;
+}
+/*hover que cambia de color el botón*/
+
+.btn-sonido:hover {
+    background: rgba(46, 196, 182, 0.8);
+}

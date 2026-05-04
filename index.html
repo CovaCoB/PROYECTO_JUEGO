@@ -4,18 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal</title>
-    <link rel="stylesheet" href="general.css">
-    <link rel="stylesheet" href="estilos_portal.css">
+    <link rel="stylesheet" href="index.css">
+    <script src="sonido.js" defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 </head>
 <body>
-    <div class="contenedor">
-        <div class="cartas">
-            <div class="carta">
-                <a href="entrada_mundo/entrada_NAIA.html"><img src="Imagenes/cartaNAIAtransparente.png" alt="carta_NAIA"></a>
-            </div>
-            <div class="carta">
-                <a href="entrada_mundo/entrada_KAEL.html"><img src="Imagenes/cartaKAELtransparente.png" alt="carta_KAEL"></a>
-        </div>
-    </div>
+    <video id = "video" autoplay loop muted playsinline>
+        <source src="Imagenes/video.mp4" type="video/mp4">
+    </video>
+        <a href="index2.html">
+            <button class="btn-aeloria" id="miBoton" style="display:none;">Entrar a AELORIA</button>
+        </a>
+        <button class="btn-sonido" onclick=sonido()><i class="fa-solid fa-volume-high"></i></button>
 </body>
 </html>
