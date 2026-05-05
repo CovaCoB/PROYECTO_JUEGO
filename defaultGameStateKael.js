@@ -281,32 +281,34 @@ function mover(direccion) {
 
     let destino = habitacionActual[direccion];
     /*
-    Se crea la variable random que se usará para generar la probabilidad de encontrar un monstruo dependiendo el tipo.
-    Al principio habia creado un if(Array.isArray(destino)){destino = (random < 0.02) ? destino[1]:destino[0];} Pero no
-    podía darle más probabilidad a un monstruo que a otro porque directamente cogía del array de rooms la habitación[1] que
-    es la que tiene el monstruo. Al final, diseñé el programa con includes buscando por clave.
-    */
+    Se crea la variable random que se usará para generar la probabilidad de encontrar a la bruja.*/
     let random = Math.random();
 
-    if (Array.isArray(destino)) {
-        if (destino.includes("castillomonstruo2")) {
-            destino = (random <= 0.30) ? "castillomonstruo2" : "castillo_este";
-        } 
-        
-        else if (destino.includes("castillo_boss")) {
-            destino = (random <= 0.02) ? "castillo_boss" : "castilloNoBoss";
+       if (Array.isArray(destino)) {
+        if (destino.includes("paisaje_izq_bruja")) {
+            // 20% de probabilidad de encontrar a la bruja
+            destino = (random <= 0.20) ? "paisaje_izq_bruja" : "paisaje_izq";
         }
-      
+        else if (destino.includes("castillomonstruo2")) {
+            // 100% de probabilidad de encontrar al monstruo
+            destino = (random <= 1) ? "castillomonstruo2" : "castillo_este";
+        }
         else if (destino.includes("castillo_este2_monstruo")) {
-            destino = (random <= 0.20) ? "castillo_este2_monstruo": "castillo_este2";
+            // 100% de probabilidad de encontrar al monstruo 
+            destino = (random <= 1) ? "castillo_este2_monstruo" : "castillo_este2";
         }
-        else if (destino.includes("paisaje_izq_bruja")) {
-            destino = (random <= 0.20) ? "paisaje_izq_bruja": "paisaje_izq";
+        else if (destino.includes("castillo_boss")) {
+            // 100% de probabilidad de encontrar al boss
+            destino = (random <= 1) ? "castillo_boss" : "castilloNoBoss";
         }
         else {
+            // se coge el primer destino por defecto
             destino = destino[0];
         }
     }
+
+    // se limpia el enemigo anterior al cambiar de sala
+    localStorage.removeItem("enemigoEnCombate");
     //Se guarda en el local storage el nombre con la nueva sala, asi se puede recordar la posicion del jugador para cambiar a otra.
     if (rutas[destino]) {
         localStorage.setItem("salaActual", destino);
@@ -569,12 +571,12 @@ if(botonMochila){
 }
 
 /*
-Función comprar poción que suma pociones y resta 3 de oro.
+Función comprar poción que suma pociones y resta 5 de oro.
 */
 function comprarPocion(){
     let heroe = cargarPartida();
-    if(heroe.gold >= 3){
-        heroe.gold-=3;
+    if(heroe.gold >= 5){
+        heroe.gold-=5;
         heroe.potions+=1;
         guardarPartida(heroe);
         let texto = `<p>Esta poción te será de gran ayuda en el viaje.<br>
@@ -718,110 +720,193 @@ if(recuperar){
         recuperarVida();
     });
 }
-/*
-Se inicializa enemigoActual fuera para que pueda bajarle la vida. Si estuviese dentro se reiniciaría todo el tiempo y el
-personaje no podría vencerlo.
-*/
+
+/*primero el enemigo ataca al entrar con window.onload. Luego el jugador ataca haciendo clic al botón.
+Después si el enemigo sigue vivo contraataca de nuevo automáticamente.*/
 
 let enemigoActual = null;
 
-function ataque() {
+window.onload = function () {
+    iniciarCombate();
+};
+
+/*aparece el enemigo asociado a la sala y ataca */
+function iniciarCombate() {
     let heroe = cargarPartida();
     let sala = localStorage.getItem("salaActual");
     let listaEnemigos = defaultGameState.map.enemies;
-    //Se mira si hay enemigos guardados. Se convierte el string json a formato javascript y se asigna a enemigoActual.
-    if (enemigoActual === null) {
-        let enemigoGuardado = localStorage.getItem("enemigoEnCombate");
-        if (enemigoGuardado) {
-            enemigoActual = JSON.parse(enemigoGuardado);
+    let enemigoCreado = localStorage.getItem("enemigoEnCombate");
+    if (enemigoCreado) {
+        enemigoActual = JSON.parse(enemigoCreado);
+    } else {
+        // se asigna el enemigo a la sala
+        switch (sala) {
+            case "castillo_este2_monstruo":
+                enemigoActual = { ...listaEnemigos[0] }; // La quimera
+                break;
+            case "castillomonstruo2":
+                enemigoActual = { ...listaEnemigos[1] }; // Espectro
+                break;
+            case "castillo_boss":
+                enemigoActual = { ...listaEnemigos[2] }; // El coloso
+                break;
+            default:
+                return; // no hay sala con combate
         }
+        // se guarda el enemigo
+        localStorage.setItem("enemigoEnCombate", JSON.stringify(enemigoActual));
     }
-    //Si no hay enemigo cargado, se crea una copia. Se utiliza spread {...} que copia el existente sin modificar el original.
-    if (enemigoActual === null) {
-        if (sala === "castillo_este2_monstruo") {
-            enemigoActual = { ...listaEnemigos[0] }; 
-        } else if (sala === "castillomonstruo2") {
-            enemigoActual = { ...listaEnemigos[1] }; 
-        } else if (sala === "castillo_boss") {
-            enemigoActual = { ...listaEnemigos[2] };
-        }
-    }
-    //También puede ser que la sala no tenga enemigos, por lo tanto se manda un mensaje por el cuadro del juego.
-    if (enemigoActual === null) {
-        recuadroTexto(`<p>Aquí no hay enemigos.</p>`);
-        return;
-    }
-    //variables para sumar item + bonus y así en la pelea se tiene en cuenta este total.
-    let miFuerzaTotal = heroe.strength + heroe.strengthBonus;
-    let miDefensaTotal = heroe.defense + heroe.defenseBonus;
-    //el 1 garantiza que el daño mínimo sea 1. Se hace fuerza total menos la defensa del enemigo.
-    let dañoEnemigo = Math.max(1, miFuerzaTotal - enemigoActual.defence);
-    //se resta a la vida del enemigo.
-    enemigoActual.health -= dañoEnemigo;
-    //se guarda el estado del enemigo y aunque se reinicie la pelea se podrá continuar desde ese punto.
-    localStorage.setItem("enemigoEnCombate", JSON.stringify(enemigoActual));
-    
-    recuadroTexto(`<p>Has atacado a ${enemigoActual.name} y le has hecho ${dañoEnemigo} de daño.</p>`);
-    //si la vida del enemigo es menor o igual que 0 significa que el heroe ha ganado. El enemigo se elimina.
-    if (enemigoActual.health <= 0) {
-        recuadroTexto(`<p>¡Has derrotado a ${enemigoActual.name}!</p>`);
-        heroe.strengthBonus += 2;
-        recuadroTexto(`<p>¡Has encontrado una lanza mejor entre los restos de ${enemigoActual.name}! (+2 Fuerza)</p>`);
-        //se elimina el efecto de la defensa.
-        if(heroe.isBuffed){
-            heroe.defenseBonus -= 5; 
-            heroe.isBuffed = false;
-            guardarPartida(heroe);
-            recuadroTexto(`<p>El efecto de la poción se ha desvanecido.</p>`);
-        }
-        enemigoActual = null;
-        localStorage.removeItem("enemigoEnCombate"); 
-        /*Introduje esta función porque quería que, una vez muerto el enemigo se cargase automáticamente la sala sin
-        enemigo. Por ejemplo, en la del boss final introduje en el css al enemigo y humo. Pero, al morir el enemigo,
-        tanto éste como el humo se borran, mostrandose la sala vacía. Así da mas credibilidad al juego.
-        Introduje cuatro segundos de tiempo para que la persona que jugase leyese en el recuadro el mensaje de que ganó la pelea
-         y de que obtuvo bonus de fuerza antes de que se reiniciase
-        */
-        setTimeout(function() {
-            
-            if (sala === "castillo_boss") {
-                localStorage.setItem("salaActual", "castilloNoBoss");
-                window.location.href = "../castilloNoBoss/noBossKael.html";
-            } 
-            else if (sala === "castillo_este2_monstruo") {
-                localStorage.setItem("salaActual", "castillo_este2"); 
-                window.location.href = "../castillo_este2/castillo_este2KAEL.html"; 
-            } 
-            else if (sala === "castillomonstruo2") {
-                localStorage.setItem("salaActual", "castillo_este"); 
-                window.location.href = "../castillo_este/castillo_esteKAEL.html";
-            }
-        }, 4000);
-        return;
-    }
-    //misma manera que con enemigo.
-    let dañoHeroe = Math.max(1, enemigoActual.strength - miDefensaTotal);
-    heroe.health -= dañoHeroe;
 
-    if (heroe.health <= 0) {
-        recuadroTexto(`<p>${enemigoActual.name} te ha matado.</p>`);
-        heroe.health = 10;
-        //si muere el heroe te redirige a la zona de entrada al mundo. Te carga el personaje con 10 de vida. Lo implementé porque daba realismo.
-        localStorage.setItem("salaActual", "entrada_mundo");
-        localStorage.removeItem("enemigoEnCombate");
-        guardarPartida(heroe);
-        
-        setTimeout(function() {
-            window.location.href = "../entrada_mundo/entrada_KAEL.html";
-        }, 2000);
-        return;
-    }
-    guardarPartida(heroe);
-    muestraHeroe();
-    recuadroTexto(`<p>${enemigoActual.name} te ataca y te hace ${dañoHeroe} de daño.</p>`);
+    // enemigo ataca el primero
+    turnoEnemigo(heroe);
 }
 
+function turnoEnemigo(heroe) {
+    let dañoEnemigo = enemigoActual.strength + getRandom(1, 10)
+        - heroe.defense - heroe.defenseBonus;
+
+    // no permitir daño negativo
+    dañoEnemigo = Math.max(0, dañoEnemigo);
+    heroe.health -= dañoEnemigo;
+
+    recuadroTexto(`<p>${enemigoActual.name} te ataca y te hace <strong>${dañoEnemigo}</strong> de daño. 
+        Te quedan ${heroe.health} puntos de vida.</p>`);
+
+    if (heroe.health <= 0) {
+        morirHeroe(heroe);
+        return;
+    }
+
+    guardarPartida(heroe);
+    muestraHeroe();
+}
+
+/* se ataca pulsando el botón */
+function ataque() {
+    let heroe = cargarPartida();
+
+    // por si se pierde el enemigo se recupera
+    if (!enemigoActual) {
+        let guardado = localStorage.getItem("enemigoEnCombate");
+        if (guardado) {
+            enemigoActual = JSON.parse(guardado);
+        } else {
+            recuadroTexto("<p>No hay ningún enemigo aquí.</p>");
+            return;
+        }
+    }
+
+    //ataque del héroe
+    let dañoHeroe = heroe.strength + heroe.strengthBonus + getRandom(1, 10)
+        - enemigoActual.defence;
+
+    dañoHeroe = Math.max(0, dañoHeroe);
+    enemigoActual.health -= dañoHeroe;
+
+    recuadroTexto(`<p>Atacas a ${enemigoActual.name} y le haces <strong>${dañoHeroe}</strong> de daño. 
+        Le quedan ${enemigoActual.health} puntos de vida.</p>`);
+
+    if (enemigoActual.health <= 0) {
+        matarEnemigo(heroe);
+        return;
+    }
+
+    // se guarda el estado del enemigo
+    localStorage.setItem("enemigoEnCombate", JSON.stringify(enemigoActual));
+    guardarPartida(heroe);
+
+    //enemigo contraataca
+    turnoEnemigo(heroe);
+}
+
+// se genera daño aleatorio
+function getRandom(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+//se vuelven a 0 las bonificaciones 
+function morirHeroe(heroe) {
+    recuadroTexto(`<p>Has muerto...</p>`);
+
+    heroe.health = 100;
+    heroe.gold = 0;
+    heroe.strengthBonus = 0;
+    heroe.defenseBonus = 0;
+
+    localStorage.removeItem("enemigoEnCombate");
+    localStorage.setItem("salaActual", "entrada_mundo");
+
+    guardarPartida(heroe);
+
+    //volver al inicio
+    setTimeout(() => {
+        window.location.href = "../entrada_mundo/entrada_KAEL.html";
+    }, 2000);
+}
+
+
+//funcion de matar al enemigo
+function matarEnemigo(heroe) {
+    recuadroTexto(`<p>¡Has derrotado a ${enemigoActual.name}!</p>`);
+
+    // 40% de probabilidad de encontrar un objeto
+    if (Math.random() < 0.4) {
+
+        let esEspada = Math.random() < 0.5;
+        let bonus = getRandom(1,10);
+
+        if (esEspada) {
+            recuadroTexto(`<p>Has encontrado una espada (+${bonus} ataque)</p>`);
+
+            if (bonus > heroe.strengthBonus) {
+                heroe.strengthBonus = bonus;
+                recuadroTexto(`<p>¡Has encontrado una espada mejor!</p>`);
+            } else {
+                recuadroTexto(`<p>Es peor que tu arma actual.</p>`);
+            }
+
+        } else {
+            recuadroTexto(`<p>Has encontrado un escudo (+${bonus} defensa)</p>`);
+
+            if (bonus > heroe.defenseBonus) {
+                heroe.defenseBonus = bonus;
+                recuadroTexto(`<p>¡Has encontrado un escudo mejor!</p>`);
+            } else {
+                recuadroTexto(`<p>Es peor que tu escudo actual.</p>`);
+            }
+        }
+    }
+
+    enemigoActual = null;
+    localStorage.removeItem("enemigoEnCombate");
+
+    guardarPartida(heroe);
+
+    //se muestra la sala sin enemigo:
+    let sala = localStorage.getItem("salaActual");
+
+    setTimeout(function() {
+
+        if (sala === "castillo_boss") {
+            localStorage.setItem("salaActual", "castilloNoBoss");
+            window.location.href = "../castilloNoBoss/noBossKael.html";
+        } 
+        else if (sala === "castillo_este2_monstruo") {
+            localStorage.setItem("salaActual", "castillo_este2");
+            window.location.href = "../castillo_este2/castillo_este2KAEL.html";
+        } 
+        else if (sala === "castillomonstruo2") {
+            localStorage.setItem("salaActual", "castillo_este");
+            window.location.href = "../castillo_este/castillo_esteKAEL.html";
+        }
+
+    }, 3000);
+}
+
+
+// botón para atacar al enemigo
 let pelea = document.getElementById("atacar");
+
 if (pelea) {
     pelea.addEventListener("click", function(e) {
         e.preventDefault();
@@ -829,7 +914,7 @@ if (pelea) {
     });
 }
 
-
+//cuando hay problemas de cache, hago clic al boton que está en el desplegable de los ajustes y resetea caché+personaje
 function resetearPersonaje(){
  localStorage.removeItem("datosKael");
     localStorage.removeItem("enemigoEnCombate");
